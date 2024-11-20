@@ -1,9 +1,9 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactsDisplay from '../ContactsDisplay/ContactsDisplay';
 import Section from '../Section/Section';
+import contactService from '../../services/contacts';
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
@@ -12,36 +12,63 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/contacts').then((response) => {
-      setContacts(response.data);
+    contactService.getAllContacts().then((initialContacts) => {
+      setContacts(initialContacts);
     });
   }, []);
+
+  const addNewContact = (event) => {
+    const existingContact = contacts.find(
+      (contact) => contact.name === newContact
+    );
+    
+    event.preventDefault();
+
+    if (existingContact !== undefined) {
+      updateContact(existingContact);
+    } else {
+      const contact = {
+        name: newContact,
+        phone: newPhone,
+      };
+
+      contactService.createContact(contact).then((returnedObject) => {
+        setContacts(contacts.concat(returnedObject));
+        setNewContact('');
+        setNewPhone('');
+      });
+    }
+  };
+
+  const updateContact = (contact) => {
+    const message = `${contact.name} is already added to the phonebook, replace the old number with a new one`;
+
+    if (window.confirm(message)) {
+      const updatedContact = { ...contact, phone: newPhone };
+
+      contactService
+        .updateContact(contact.id, updatedContact)
+        .then((returnedObject) => {
+          setContacts(
+            contacts.map((c) => (c.id === contact.id ? returnedObject : c))
+          );
+        });
+    }
+  };
+
+  const deleteContact = (id) => {
+    const contact = contacts.find((contact) => contact.id === id);
+
+    if (window.confirm(`Delete ${contact.name}`)) {
+      contactService.deleteContact(id).then(() => {
+        setContacts(contacts.filter((contact) => contact.id !== id));
+      });
+    }
+  };
 
   const filteredContacts = contacts.filter((contact) =>
     contact.name.includes(searchTerm)
   );
-
-  const addNewContact = (event) => {
-    const contactExists = contacts.some(
-      (contact) => contact.name === newContact
-    );
-
-    if (contactExists) {
-      const message = `${newContact} is aleady added to phonebook.`;
-      alert(message);
-      return;
-    }
-
-    event.preventDefault();
-    const contact = {
-      id: String(contacts.length + 1),
-      name: newContact,
-      phone: newPhone,
-    };
-    setContacts(contacts.concat(contact));
-    setNewContact('');
-    setNewPhone('');
-  };
 
   return (
     <>
@@ -64,7 +91,7 @@ const App = () => {
         />
       </Section>
       <Section heading='Contacts'>
-        <ContactsDisplay contacts={filteredContacts} />
+        <ContactsDisplay contacts={filteredContacts} onClick={deleteContact} />
       </Section>
     </>
   );
