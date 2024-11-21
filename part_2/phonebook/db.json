@@ -1,29 +1,24 @@
 {
   "contacts": [
     {
-      "name": "Ada Lovelace",
-      "phone": "111-111-1111",
-      "id": "2"
+      "id": "db30",
+      "name": "Jane Doe",
+      "phone": "123-456-7890"
     },
     {
-      "name": "Mary Poppendieck",
-      "phone": "39-23-6423122",
-      "id": "4"
+      "id": "cb01",
+      "name": "James Sunderland",
+      "phone": "365-770-4156"
     },
     {
-      "id": "478c",
+      "id": "56b9",
       "name": "Alec German",
       "phone": "555-555-5555"
     },
     {
-      "id": "da92",
-      "name": "John Smith",
-      "phone": "222-222-2222"
-    },
-    {
-      "id": "db30",
-      "name": "Jane Doe",
-      "phone": "123-456-7890"
+      "id": "d6aa",
+      "name": "Dan Abramov",
+      "phone": "999-999-9999"
     }
   ]
 }

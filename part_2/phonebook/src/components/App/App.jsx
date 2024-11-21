@@ -3,6 +3,7 @@ import SearchBar from '../SearchBar/SearchBar';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactsDisplay from '../ContactsDisplay/ContactsDisplay';
 import Section from '../Section/Section';
+import Notification from '../Notification/Notification';
 import contactService from '../../services/contacts';
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newContact, setNewContact] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [message, setMessage] = useState(null);
+  const [color, setColor] = useState('');
 
   useEffect(() => {
     contactService.getAllContacts().then((initialContacts) => {
@@ -21,7 +24,7 @@ const App = () => {
     const existingContact = contacts.find(
       (contact) => contact.name === newContact
     );
-    
+
     event.preventDefault();
 
     if (existingContact !== undefined) {
@@ -33,11 +36,23 @@ const App = () => {
       };
 
       contactService.createContact(contact).then((returnedObject) => {
+        const notificationMsg = `Added ${returnedObject.name}`;
+        toggleNotification(notificationMsg, 'green');
         setContacts(contacts.concat(returnedObject));
         setNewContact('');
         setNewPhone('');
       });
     }
+  };
+
+  const toggleNotification = (message, color) => {
+    setMessage(message);
+    setColor(color);
+
+    setTimeout(() => {
+      setMessage(null);
+      setColor('');
+    }, 5000);
   };
 
   const updateContact = (contact) => {
@@ -49,9 +64,18 @@ const App = () => {
       contactService
         .updateContact(contact.id, updatedContact)
         .then((returnedObject) => {
+          const message = `Updated phone number for ${returnedObject.name}`;
+
+          toggleNotification(message, 'green');
           setContacts(
             contacts.map((c) => (c.id === contact.id ? returnedObject : c))
           );
+          setNewContact('');
+          setNewPhone('');
+        })
+        .catch(() => {
+          const message = `Information of ${contact.name} has already been removed from server`;
+          toggleNotification(message, 'red');
         });
     }
   };
@@ -73,6 +97,7 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
+      <Notification message={message} color={color} />
       <SearchBar
         term={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
