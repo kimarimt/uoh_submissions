@@ -1,3 +1,5 @@
+import WeatherData from "./WeatherData";
+
 const CountryData = ({ country }) => {
   const name = country.name.common;
   const capital = country.capital[0];
@@ -19,6 +21,7 @@ const CountryData = ({ country }) => {
         ))}
       </ul>
       <img src={flag} alt={`Flag of ${name}`} />
+      <WeatherData capital={capital} />
     </div>
   );
 };
