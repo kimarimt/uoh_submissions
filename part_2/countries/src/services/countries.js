@@ -8,13 +8,6 @@ const getAll = async () => {
   return response.data;
 };
 
-const getCountryByName = async (country) => {
-  const request = axios.get(`${BASE_URL}/${country}`);
-  const response = await request;
-  return response.data;
-};
-
 export default {
   getAll,
-  getCountryByName,
 };
