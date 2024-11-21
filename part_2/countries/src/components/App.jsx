@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import CountryData from './CountryData';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 import contactService from '../services/countries';
@@ -6,6 +7,7 @@ import contactService from '../services/countries';
 const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState('');
 
   useEffect(() => {
     contactService.getAll().then((countriesData) => {
@@ -17,45 +19,33 @@ const App = () => {
     country.name.common.toLowerCase().includes(searchTerm)
   );
 
-  const renderCountryData = (country) => {
-    const name = country.name.common;
-    const capital = country.capital[0];
-    const area = country.area;
-    const languages = Object.values(country.languages);
-    const flag = country.flags.png;
+  const handleSearch = (event) => {
+    setCountry(null);
+    setSearchTerm(event.target.value);
+  };
 
-    return (
-      <div>
-        <h1>{name}</h1>
-        <p>Capital: {capital}</p>
-        <p>Area: {area}</p>
-        <p>
-          <strong>languages</strong>
-        </p>
-        <ul>
-          {languages.map((language, i) => (
-            <li key={i}>{language}</li>
-          ))}
-        </ul>
-        <img src={flag} alt={`Flag of ${name}`} />
-      </div>
-    );
+  const handleCountry = (country) => {
+    setCountry(country);
   };
 
   return (
     <div>
-      <SearchBar
-        searchTerm={searchTerm}
-        onChange={(event) => setSearchTerm(event.target.value)}
-      />
+      <SearchBar searchTerm={searchTerm} onChange={handleSearch} />
       <div>
-        {filteredCountries.length == 1 &&
-          renderCountryData(filteredCountries[0])}
+        {filteredCountries.length == 1 && (
+          <CountryData country={filteredCountries[0]} />
+        )}
         {filteredCountries.length > 1 && filteredCountries.length < 10 && (
-          <SearchResults
-            searchTerm={searchTerm}
-            countries={filteredCountries}
-          />
+          <>
+            {country && <CountryData country={country} />}
+            {!country && (
+              <SearchResults
+                searchTerm={searchTerm}
+                countries={filteredCountries}
+                onClick={handleCountry}
+              />
+            )}
+          </>
         )}
         {filteredCountries.length > 10 && searchTerm !== '' && (
           <p>Too many matches, specify another filter</p>
