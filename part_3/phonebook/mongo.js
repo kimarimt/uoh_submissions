@@ -19,7 +19,7 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema);
 
-if (process.argv.length === 3) {
+if (argmuents.length === 1) {
   console.log('phonebook:');
 
   Contact.find({}).then((results) => {
