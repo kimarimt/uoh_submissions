@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 
 let contacts = [
   {
@@ -27,10 +28,22 @@ const PORT = 3001;
 const app = express();
 
 const generateId = () => {
-  return Math.floor(Math.random() * (100000 - contacts.length)) ;
+  return Math.floor(Math.random() * (100000 - contacts.length));
 };
 
 app.use(express.json());
+
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :body', {
+    skip: (req, res) => {
+      return req.method !== 'POST';
+    },
+  })
+);
+
+morgan.token('body', (req, res) => {
+  return JSON.stringify(req.body);
+});
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello, World!</h1>');
