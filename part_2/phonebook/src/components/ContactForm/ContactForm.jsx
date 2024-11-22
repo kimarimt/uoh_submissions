@@ -1,8 +1,8 @@
 const ContactForm = ({
   contact,
-  phone,
+  number,
   handleContact,
-  handlePhone,
+  handleNumber,
   addNewContact,
 }) => (
   <form onSubmit={addNewContact}>
@@ -18,13 +18,13 @@ const ContactForm = ({
       />
     </div>
     <div>
-      <label htmlFor='phone'>Phone Number: </label>
+      <label htmlFor='number'>Number: </label>
       <input
         type='tel'
-        name='phone'
-        id='phone'
-        value={phone}
-        onChange={handlePhone}
+        name='number'
+        id='number'
+        value={number}
+        onChange={handleNumber}
         pattern='[0-9]{3}-[0-9]{3}-[0-9]{4}'
         required
       />

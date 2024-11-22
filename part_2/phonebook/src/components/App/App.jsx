@@ -9,7 +9,7 @@ import contactService from '../../services/contacts';
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [newContact, setNewContact] = useState('');
-  const [newPhone, setNewPhone] = useState('');
+  const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [message, setMessage] = useState(null);
   const [color, setColor] = useState('');
@@ -32,7 +32,7 @@ const App = () => {
     } else {
       const contact = {
         name: newContact,
-        phone: newPhone,
+        number: newNumber,
       };
 
       contactService.createContact(contact).then((returnedObject) => {
@@ -40,7 +40,7 @@ const App = () => {
         toggleNotification(notificationMsg, 'green');
         setContacts(contacts.concat(returnedObject));
         setNewContact('');
-        setNewPhone('');
+        setNewNumber('');
       });
     }
   };
@@ -59,7 +59,7 @@ const App = () => {
     const message = `${contact.name} is already added to the phonebook, replace the old number with a new one`;
 
     if (window.confirm(message)) {
-      const updatedContact = { ...contact, phone: newPhone };
+      const updatedContact = { ...contact, number: newNumber };
 
       contactService
         .updateContact(contact.id, updatedContact)
@@ -71,7 +71,7 @@ const App = () => {
             contacts.map((c) => (c.id === contact.id ? returnedObject : c))
           );
           setNewContact('');
-          setNewPhone('');
+          setNewNumber('');
         })
         .catch(() => {
           const message = `Information of ${contact.name} has already been removed from server`;
@@ -105,12 +105,12 @@ const App = () => {
       <Section heading='Add a New Contact'>
         <ContactForm
           contact={newContact}
-          phone={newPhone}
+          number={newNumber}
           handleContact={(event) => {
             setNewContact(event.target.value);
           }}
-          handlePhone={(event) => {
-            setNewPhone(event.target.value);
+          handleNumber={(event) => {
+            setNewNumber(event.target.value);
           }}
           addNewContact={addNewContact}
         />
