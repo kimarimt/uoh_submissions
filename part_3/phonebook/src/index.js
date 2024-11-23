@@ -19,6 +19,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError') {
     return res.status(404).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return res.status(404).send({ error: error.message });
   }
 
   next(error);
@@ -29,12 +31,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/info', (req, res, next) => {
-  Contact.countDocuments().then((count) => {
-    res.send(
-      `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toUTCString()}</p></div>`
-    );
-  })
-  .catch(error => next(error));
+  Contact.countDocuments()
+    .then((count) => {
+      res.send(
+        `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toUTCString()}</p></div>`
+      );
+    })
+    .catch((error) => next(error));
 });
 
 app.get('/api/contacts', (req, res) => {
@@ -51,7 +54,7 @@ app.get('/api/contacts/:id', (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.post('/api/contacts/', (req, res) => {
+app.post('/api/contacts/', (req, res, next) => {
   const { name, number } = req.body;
 
   if (name === undefined || number === undefined) {
@@ -65,9 +68,12 @@ app.post('/api/contacts/', (req, res) => {
     number,
   });
 
-  contact.save().then((savedContact) => {
-    res.json(savedContact);
-  });
+  contact
+    .save()
+    .then((savedContact) => {
+      res.json(savedContact);
+    })
+    .catch((error) => next(error));
 });
 
 app.put('/api/contacts/:id', (req, res, next) => {
@@ -78,7 +84,11 @@ app.put('/api/contacts/:id', (req, res, next) => {
     number,
   };
 
-  Contact.findByIdAndUpdate(req.params.id, modified, { new: true })
+  Contact.findByIdAndUpdate(req.params.id, modified, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  })
     .then((updatedContact) => {
       res.json(updatedContact);
     })

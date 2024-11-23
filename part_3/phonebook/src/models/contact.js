@@ -14,8 +14,16 @@ mongoose
   });
 
 const contactSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    match: /\d{3}-\d{3}-\d{4}/,
+    required: true
+  },
 });
 
 contactSchema.set('toJSON', {
