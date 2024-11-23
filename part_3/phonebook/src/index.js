@@ -28,12 +28,13 @@ app.get('/', (req, res) => {
   res.send('<h1>Hello, World!</h1>');
 });
 
-app.get('/info', (req, res) => {
-  res.send(
-    `<div><p>Phonebook has info for ${
-      contacts.length
-    } people</p><p>${new Date().toUTCString()}</p></div>`
-  );
+app.get('/info', (req, res, next) => {
+  Contact.countDocuments().then((count) => {
+    res.send(
+      `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toUTCString()}</p></div>`
+    );
+  })
+  .catch(error => next(error));
 });
 
 app.get('/api/contacts', (req, res) => {
@@ -69,7 +70,7 @@ app.post('/api/contacts/', (req, res) => {
   });
 });
 
-app.put('/api/contacts/:id', (req, res) => {
+app.put('/api/contacts/:id', (req, res, next) => {
   const { name, number } = req.body;
 
   const modified = {
@@ -84,7 +85,7 @@ app.put('/api/contacts/:id', (req, res) => {
     .catch((error) => next(error));
 });
 
-app.delete('/api/contacts/:id', (req, res) => {
+app.delete('/api/contacts/:id', (req, res, next) => {
   Contact.findByIdAndDelete(req.params.id)
     .then(() => {
       res.status(204).end();
