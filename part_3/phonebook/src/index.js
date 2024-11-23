@@ -3,29 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import Contact from './models/contact.js';
 
-let contacts = [
-  {
-    id: '1',
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: '2',
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: '3',
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: '4',
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-];
-
 const PORT = process.env.PORT;
 const app = express();
 
@@ -35,6 +12,16 @@ app.use(cors());
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' });
+};
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return res.status(404).send({ error: 'malformatted id' });
+  }
+
+  next(error);
 };
 
 app.get('/', (req, res) => {
@@ -55,31 +42,26 @@ app.get('/api/contacts', (req, res) => {
   });
 });
 
-app.get('/api/contacts/:id', (req, res) => {
-  const id = req.params.id;
-  const contact = contacts.find((contact) => contact.id === id);
-
-  if (contact) {
-    res.json(contact);
-  } else {
-    res.status(404).json({
-      error: 'resource not found',
-    });
-  }
+app.get('/api/contacts/:id', (req, res, next) => {
+  Contact.findById(req.params.id)
+    .then((contact) => {
+      res.json(contact);
+    })
+    .catch((error) => next(error));
 });
 
 app.post('/api/contacts/', (req, res) => {
-  const body = req.body;
+  const { name, number } = req.body;
 
-  if (body.name === undefined || body.number === undefined) {
+  if (name === undefined || number === undefined) {
     return res.status(400).json({
       error: 'name or number is missing',
     });
   }
 
   const contact = new Contact({
-    name: body.name,
-    number: body.number,
+    name,
+    number,
   });
 
   contact.save().then((savedContact) => {
@@ -87,14 +69,31 @@ app.post('/api/contacts/', (req, res) => {
   });
 });
 
-app.delete('/api/contacts/:id', (req, res) => {
-  const id = req.params.id;
-  contacts = contacts.filter((contact) => contact.id !== id);
+app.put('/api/contacts/:id', (req, res) => {
+  const { name, number } = req.body;
 
-  res.status(204).end();
+  const modified = {
+    name,
+    number,
+  };
+
+  Contact.findByIdAndUpdate(req.params.id, modified, { new: true })
+    .then((updatedContact) => {
+      res.json(updatedContact);
+    })
+    .catch((error) => next(error));
+});
+
+app.delete('/api/contacts/:id', (req, res) => {
+  Contact.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.use(unknownEndpoint);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`[server]: listening at http://localhost:${PORT}`);
