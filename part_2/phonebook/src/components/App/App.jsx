@@ -20,6 +20,22 @@ const App = () => {
     });
   }, []);
 
+  const toggleNotification = (message, color) => {
+    setMessage(message);
+    setColor(color);
+
+    setTimeout(() => {
+      setMessage(null);
+      setColor('');
+    }, 5000);
+  };
+
+  const notifyAndReset = (message, color) => {
+    toggleNotification(message, color);
+    setNewContact('');
+    setNewNumber('');
+  };
+
   const addNewContact = (event) => {
     const existingContact = contacts.find(
       (contact) => contact.name === newContact
@@ -35,24 +51,17 @@ const App = () => {
         number: newNumber,
       };
 
-      contactService.createContact(contact).then((returnedObject) => {
-        const notificationMsg = `Added ${returnedObject.name}`;
-        toggleNotification(notificationMsg, 'green');
-        setContacts(contacts.concat(returnedObject));
-        setNewContact('');
-        setNewNumber('');
-      });
+      contactService
+        .createContact(contact)
+        .then((returnedObject) => {
+          const notificationMsg = `Added ${returnedObject.name}`;
+          setContacts(contacts.concat(returnedObject));
+          notifyAndReset(notificationMsg, 'green')
+        })
+        .catch((error) => {
+          toggleNotification(error.response.data.error, 'red');
+        });
     }
-  };
-
-  const toggleNotification = (message, color) => {
-    setMessage(message);
-    setColor(color);
-
-    setTimeout(() => {
-      setMessage(null);
-      setColor('');
-    }, 5000);
   };
 
   const updateContact = (contact) => {
@@ -66,16 +75,13 @@ const App = () => {
         .then((returnedObject) => {
           const message = `Updated phone number for ${returnedObject.name}`;
 
-          toggleNotification(message, 'green');
           setContacts(
             contacts.map((c) => (c.id === contact.id ? returnedObject : c))
           );
-          setNewContact('');
-          setNewNumber('');
+          notifyAndReset(message, 'green');
         })
-        .catch(() => {
-          const message = `Information of ${contact.name} has already been removed from server`;
-          toggleNotification(message, 'red');
+        .catch((error) => {
+          toggleNotification(error.response.data.error, 'red');
         });
     }
   };
@@ -84,9 +90,15 @@ const App = () => {
     const contact = contacts.find((contact) => contact.id === id);
 
     if (window.confirm(`Delete ${contact.name}`)) {
-      contactService.deleteContact(id).then(() => {
-        setContacts(contacts.filter((contact) => contact.id !== id));
-      });
+      contactService
+        .deleteContact(id)
+        .then(() => {
+          setContacts(contacts.filter((contact) => contact.id !== id));
+        })
+        .catch(() => {
+          const message = `Information of ${contact.name} has already been removed from server`;
+          toggleNotification(message, 'red');
+        });
     }
   };
 

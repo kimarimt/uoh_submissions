@@ -14,7 +14,6 @@ const ContactForm = ({
         id='name'
         value={contact}
         onChange={handleContact}
-        required
       />
     </div>
     <div>
@@ -25,8 +24,6 @@ const ContactForm = ({
         id='number'
         value={number}
         onChange={handleNumber}
-        pattern='[0-9]{3}-[0-9]{3}-[0-9]{4}'
-        required
       />
     </div>
     <button type='submit'>add</button>
