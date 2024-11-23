@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "dev:full": "npx concurrently \"npm run dev\" \"cd ../../part_2/phonebook && npm start\"",
     "build:ui": "rm -rf dist && cd ../../part_2/phonebook && npm run build && cp -r dist ../../part_3/phonebook",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
