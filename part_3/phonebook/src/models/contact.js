@@ -1,17 +1,17 @@
-import mongoose from 'mongoose';
-import 'dotenv/config';
+import mongoose from 'mongoose'
+import 'dotenv/config'
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI
 
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false)
 mongoose
   .connect(uri)
-  .then((result) => {
-    console.log('connected to MongoDB');
+  .then(() => {
+    console.log('connected to MongoDB')
   })
   .catch((error) => {
-    console.log('error connecting to MongoDB: ', error.message);
-  });
+    console.log('error connecting to MongoDB: ', error.message)
+  })
 
 const contactSchema = new mongoose.Schema({
   name: {
@@ -24,14 +24,14 @@ const contactSchema = new mongoose.Schema({
     match: /\d{3}-\d{3}-\d{4}/,
     required: true
   },
-});
+})
 
 contactSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
   },
-});
+})
 
-export default mongoose.model('Contact', contactSchema);
+export default mongoose.model('Contact', contactSchema)

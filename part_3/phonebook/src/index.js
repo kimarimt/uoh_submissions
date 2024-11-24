@@ -1,88 +1,88 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import Contact from './models/contact.js';
+import 'dotenv/config'
+import express from 'express'
+import cors from 'cors'
+import Contact from './models/contact.js'
 
-const PORT = process.env.PORT;
-const app = express();
+const PORT = process.env.PORT
+const app = express()
 
-app.use(express.json());
-app.use(express.static('dist'));
-app.use(cors());
+app.use(express.json())
+app.use(express.static('dist'))
+app.use(cors())
 
 const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: 'unknown endpoint' });
-};
+  res.status(404).send({ error: 'unknown endpoint' })
+}
 
 const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
+  console.error(error.message)
 
   if (error.name === 'CastError') {
-    return res.status(404).send({ error: 'malformatted id' });
+    return res.status(404).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return res.status(404).send({ error: error.message });
+    return res.status(404).send({ error: error.message })
   }
 
-  next(error);
-};
+  next(error)
+}
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello, World!</h1>');
-});
+  res.send('<h1>Hello, World!</h1>')
+})
 
 app.get('/info', (req, res, next) => {
   Contact.countDocuments()
     .then((count) => {
       res.send(
         `<div><p>Phonebook has info for ${count} people</p><p>${new Date().toUTCString()}</p></div>`
-      );
+      )
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
 app.get('/api/contacts', (req, res) => {
   Contact.find({}).then((results) => {
-    res.json(results);
-  });
-});
+    res.json(results)
+  })
+})
 
 app.get('/api/contacts/:id', (req, res, next) => {
   Contact.findById(req.params.id)
     .then((contact) => {
-      res.json(contact);
+      res.json(contact)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
 app.post('/api/contacts/', (req, res, next) => {
-  const { name, number } = req.body;
+  const { name, number } = req.body
 
   if (name === undefined || number === undefined) {
     return res.status(400).json({
       error: 'name or number is missing',
-    });
+    })
   }
 
   const contact = new Contact({
     name,
     number,
-  });
+  })
 
   contact
     .save()
     .then((savedContact) => {
-      res.json(savedContact);
+      res.json(savedContact)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
 app.put('/api/contacts/:id', (req, res, next) => {
-  const { name, number } = req.body;
+  const { name, number } = req.body
 
   const modified = {
     name,
     number,
-  };
+  }
 
   Contact.findByIdAndUpdate(req.params.id, modified, {
     new: true,
@@ -90,22 +90,22 @@ app.put('/api/contacts/:id', (req, res, next) => {
     context: 'query',
   })
     .then((updatedContact) => {
-      res.json(updatedContact);
+      res.json(updatedContact)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
 app.delete('/api/contacts/:id', (req, res, next) => {
   Contact.findByIdAndDelete(req.params.id)
     .then(() => {
-      res.status(204).end();
+      res.status(204).end()
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
-app.use(unknownEndpoint);
-app.use(errorHandler);
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 app.listen(PORT, () => {
-  console.log(`[server]: listening at http://localhost:${PORT}`);
-});
+  console.log(`[server]: listening at http://localhost:${PORT}`)
+})
