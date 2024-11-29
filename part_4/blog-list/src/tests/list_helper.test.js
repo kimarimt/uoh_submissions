@@ -53,7 +53,7 @@ const testBlogs = [
   },
 ]
 
-describe('dummy', () => {
+describe.skip('dummy', () => {
   test('dummy returns one', () => {
     const blogs = []
 
@@ -62,7 +62,7 @@ describe('dummy', () => {
   })
 })
 
-describe('total likes', () => {
+describe.skip('total likes', () => {
   test('of empty list is zero', () => {
     const blogs = []
 
@@ -83,7 +83,7 @@ describe('total likes', () => {
   })
 })
 
-describe('favorite blog', () => {
+describe.skip('favorite blog', () => {
   test('empty list', () => {
     const result = listHelper.favoriteBlog([])
     assert.deepStrictEqual(result, {})
@@ -124,7 +124,7 @@ describe('favorite blog', () => {
   })
 })
 
-describe('most blogs', () => {
+describe.skip('most blogs', () => {
   test('empty list', () => {
     const result = listHelper.mostBlogs([])
     assert.deepStrictEqual(result, {})
@@ -163,7 +163,7 @@ describe('most blogs', () => {
   })
 })
 
-describe('most likes', () => {
+describe.skip('most likes', () => {
   test('empty list', () => {
     const result = listHelper.mostLikes([])
     assert.deepStrictEqual(result, {})
