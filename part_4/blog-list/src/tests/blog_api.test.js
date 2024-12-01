@@ -1,4 +1,4 @@
-import { test, after, beforeEach } from 'node:test'
+import { test, describe, after, beforeEach } from 'node:test'
 import assert from 'node:assert'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
@@ -17,78 +17,179 @@ beforeEach(async () => {
   await Promise.all(promises)
 })
 
-test('blogs are return as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
-
-test('blogs have an `id` property', async () => {
-  const res = await api.get('/api/blogs')
-  const properties = Object.keys(res.body[0])
-
-  assert(properties.includes('id'))
-})
-
-test('a valid blog can be added', async () => {
-  const newBlog = {
-    title: 'Writing Tests',
-    author: 'Joe Smith',
-    url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-    likes: 5
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const blogsAtEnd = await helper.blogsInDb()
-  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
-})
-
-test('`like` property defaults to 0 if missing from request', async () => {
-  const newBlog = Blog({
-    title: 'Writing Tests',
-    author: 'Joe Smith',
-    url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+describe('fetching blogs', () => {
+  test('blogs are return as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
 
-  assert.strictEqual(newBlog.likes, 0)
+  test('api fetches the correct number of blogs', async () => {
+    const blogs = await api.get('/api/blogs')
+    assert.strictEqual(blogs.body.length, helper.initialBlogs.length)
+  })
+
+  test('blogs have an `id` property', async () => {
+    const res = await api.get('/api/blogs')
+    const properties = Object.keys(res.body[0])
+
+    assert(properties.includes('id'))
+  })
 })
 
-test('blog without a title is not added', async () => {
-  const newBlog = {
-    author: 'Joe Smith',
-    url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-    likes: 5
-  }
+describe('fetching a single blog', () => {
+  test('succeed with a 200', async () => {
+    const blogs = await helper.blogsInDb()
+    const firstBlog = blogs[0]
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
+    const res = await api
+      .get(`/api/blogs/${firstBlog.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  const blogsAtEnd = await helper.blogsInDb()
-  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    assert.deepStrictEqual(res.body, firstBlog)
+  })
+
+  test('fails with 400 if id is invalid', async () => {
+    const id = '674bc9b386756eb0de45865'
+
+    await api
+      .get(`/api/blogs/${id}`)
+      .expect(400)
+  })
 })
 
-test('blog without an author is not added', async () => {
-  const newBlog = {
-    title: 'Writing Tests',
-    url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-    likes: 5,
-  }
+describe('creating a new blog', () => {
+  describe('valid blogs', () => {
+    test('a blog with all properties can be added', async () => {
+      const newBlog = {
+        title: 'Writing Tests',
+        author: 'Joe Smith',
+        url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+        likes: 5,
+      }
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-  const blogsAtEnd = await helper.blogsInDb()
-  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+    })
+
+    test('`like` property defaults to 0 if missing from request', async () => {
+      const newBlog = Blog({
+        title: 'Writing Tests',
+        author: 'Joe Smith',
+        url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+      })
+
+      assert.strictEqual(newBlog.likes, 0)
+    })
+  })
+
+  describe('invalid blogs', () => {
+    test('blog titles are required', async () => {
+      const newBlog = {
+        author: 'Joe Smith',
+        url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+        likes: 5,
+      }
+
+      await api.post('/api/blogs').send(newBlog).expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+  })
+
+  test('blog authors are required', async () => {
+    const newBlog = {
+      title: 'Writing Tests',
+      url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+      likes: 5,
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+})
+
+describe('deleting a blog', () => {
+  test('succeed with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length-1)
+
+    const titles = blogsAtEnd.map(blog => blog.title)
+    assert(!titles.includes(blogToDelete.title))
+  })
+
+  test('fails with status code 400 if id is invalid', async () => {
+    const id = '674a70f0548212534d4e6b'
+
+    await api
+      .delete(`/api/blogs/${id}`)
+      .expect(400)
+  })
+
+  test('fails with status code 204 if existing blog has been deleted', async () => {
+    const id = await helper.nonExistingId()
+
+    await api
+      .delete(`/api/blogs/${id}`)
+      .expect(204)
+  })
+})
+
+describe('updating a blog', () => {
+  test('succeeds in updating the `likes` property', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const oldBlogObj = blogsAtStart[0]
+
+    const newBlog = {
+      title: oldBlogObj.title,
+      author: oldBlogObj.author,
+      url: oldBlogObj.url,
+      likes: oldBlogObj.likes + 1
+    }
+
+    await api
+      .put(`/api/blogs/${oldBlogObj.id}`)
+      .send(newBlog)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const newBlogObj = blogsAtEnd[0]
+    assert(oldBlogObj.likes !== newBlogObj.likes)
+  })
+
+  test('fails when `id` is invalid', async () => {
+    const id = '674bc9b386756eb0de45865'
+
+    const newBlog = {
+      title: 'dummy title',
+      author: 'dummy author',
+      url: 'https://blogs.fly.dev',
+      likes: 0
+    }
+
+    await api
+      .put(`/api/blogs/${id}`)
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 after(async () => {
