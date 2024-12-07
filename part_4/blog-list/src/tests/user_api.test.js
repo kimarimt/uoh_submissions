@@ -40,13 +40,117 @@ describe('User Api testing', () => {
       assert(usernames.includes(newUser.username))
     })
 
-    describe('fetching users', () => {
-      test('succeeds with a status code of 200', async () => {
-        await api
-          .get('/api/users')
-          .expect(200)
-          .expect('Content-Type', /application\/json/)
-      })
+    test('fails if username is not unique', async () => {
+      const usersAtStart = helper.usersInDb()
+
+      const newUser = {
+        username: 'root',
+        name: 'Superuser',
+        password: 'zwe456&lop',
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+      assert(result.body.error.includes('expected `username` to be unique'))
+
+      const usersAtEnd = await helper.usersInDb()
+      assert.strictEqual(usersAtEnd.length, (await usersAtStart).length)
+    })
+
+    test('fails if username is missing from request', async () => {
+      const usersAtStart = await helper.usersInDb()
+
+      const newUser = {
+        name: 'Alec German',
+        password: 'zwe456&lop',
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-type', /application\/json/)
+
+      assert(result.body.error.includes('Path `username` is required'))
+
+      const usersAtEnd = await helper.usersInDb()
+      assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('fails if username is less than 3 characters', async () => {
+      const usersAtStart = await helper.usersInDb()
+
+      const newUser = {
+        username: 'ag',
+        name: 'Alec German',
+        password: 'zwe456&lop',
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-type', /application\/json/)
+
+      assert(
+        result.body.error.includes(`Path \`username\` (\`${newUser.username}\`) is shorter than the minimum allowed length (3).`)
+      )
+
+      const usersAtEnd = await helper.usersInDb()
+      assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('fails if password is missing from request', async () => {
+      const usersAtStart = await helper.usersInDb()
+
+      const newUser = {
+        username: 'agerman',
+        name: 'Alec German',
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-type', /application\/json/)
+
+      assert(result.body.error.includes('password is required'))
+
+      const usersAtEnd = await helper.usersInDb()
+      assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('fails if password is less than 3 characters', async () => {
+      const usersAtStart = await helper.usersInDb()
+
+      const newUser = {
+        username: 'agerman',
+        name: 'Alec German',
+        password: 'ze'
+      }
+
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-type', /application\/json/)
+
+      assert(result.body.error.includes('must be longer than 3 characters'))
+
+      const usersAtEnd = await helper.usersInDb()
+      assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+  })
+
+  describe('fetching users', () => {
+    test('succeeds with a status code of 200', async () => {
+      await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
     })
   })
 
