@@ -18,7 +18,7 @@ mongoose.connect(config.MONGODB_URI)
   .catch(error => {
     console.error('error connecting to MongoDB', error.message)
   })
-  
+
 app.use(cors())
 app.use(express.json())
 app.use(middleware.tokenExtractor)

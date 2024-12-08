@@ -136,6 +136,24 @@ describe('Blog Api Test', () => {
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
+
+    test('fails when access token isn\'t provided', async () => {
+      const blogsAtStart = helper.blogsInDb()
+
+      const newBlog = {
+        author: 'Joe Smith',
+        url: 'https://bloglist.fly.dev/jsmith/writing-tests',
+        likes: 5,
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+
+      const blogsAtEnd = helper.blogsInDb()
+      assert.strictEqual(blogsAtStart.length, blogsAtEnd.length)
+    })
   })
 
   describe('deleting a blog', () => {
@@ -192,6 +210,35 @@ describe('Blog Api Test', () => {
         .delete(`/api/blogs/${id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
+    })
+
+    test('fails when access token isn\'t provided', async () => {
+      const user = await helper.getUser()
+      const token = helper.getToken(user)
+
+      const newBlog = {
+        url: 'https://www.codeproject.com/Articles/5372414/Build-Secure-Kubeflow-Pipelines-on-Microsoft-Azure',
+        title: 'Build Secure Kubeflow Pipelines on Microsoft Azure',
+        author: 'Intel',
+        likes: 4600,
+      }
+
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = response.body
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtStart.length, blogsAtEnd.length)
     })
   })
 
