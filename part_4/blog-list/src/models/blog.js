@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const blogSchema = new mongoose.Schema({
+  url: String,
   title: {
     type: String,
     required: true,
@@ -9,7 +10,10 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  url: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   likes: {
     type: Number,
     default: 0

@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=development nodemon src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "cross-env NODE_ENV=test node --test"
+    "test": "cross-env NODE_ENV=test node --test --test-concurrency=1"
   },
   "keywords": [],
   "author": "Alec German <kimarimt@protonmail.com>",

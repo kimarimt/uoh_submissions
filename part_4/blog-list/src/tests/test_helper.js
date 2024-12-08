@@ -37,9 +37,15 @@ const usersInDb = async () => {
   return users.map(user => user.toJSON())
 }
 
+const getUserId = async () => {
+  const user = await usersInDb()
+  return user[0].id
+}
+
 export default {
   initialBlogs,
   nonExistingId,
   blogsInDb,
-  usersInDb
+  usersInDb,
+  getUserId
 }
