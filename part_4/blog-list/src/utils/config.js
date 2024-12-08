@@ -7,8 +7,6 @@ const MONGODB_URI =
     ? process.env.TEST_MONGODB_URI
     : process.env.MONGODB_URI
 
-console.log(MONGODB_URI)
-
 export default {
   MONGODB_URI,
   PORT

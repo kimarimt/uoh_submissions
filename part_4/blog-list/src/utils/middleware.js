@@ -1,3 +1,6 @@
+import jwt from 'jsonwebtoken'
+import User from '../models/user.js'
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' })
 }
@@ -9,6 +12,21 @@ const tokenExtractor = async (req, res, next) => {
     req.token = auth.replace('Bearer ', '')
   } else {
     req.token = null
+  }
+
+  next()
+}
+
+const userExtractor = async (req, res, next) => {
+  if (!req.token) {
+    req.user = null
+  } else {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
+    req.user = await User.findById(decodedToken.id)
+  }
+
+  if (!req.user) {
+    return res.status(401).json({ error: 'token invalid' })
   }
 
   next()
@@ -35,5 +53,6 @@ const errorHandler = (error, req, res, next) => {
 export default {
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }
