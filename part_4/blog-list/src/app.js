@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import config from './utils/config.js'
 import middleware from './utils/middleware.js'
+import loginRouter from './controllers/login.js'
 import usersRouter from './controllers/user.js'
 import blogsRouter from './controllers/blog.js'
 
@@ -21,6 +22,7 @@ mongoose.connect(config.MONGODB_URI)
 app.use(cors())
 app.use(express.json())
 
+app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/blogs', blogsRouter)
 
