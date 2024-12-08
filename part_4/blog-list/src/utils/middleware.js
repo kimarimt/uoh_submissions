@@ -25,6 +25,8 @@ const errorHandler = (error, req, res, next) => {
     return res.status(401).json({ error: 'token invalid' })
   } else if (error.name === 'TokenExpiredError') {
     return res.status(401).json({ error: 'token expoired' })
+  } else if (error.name === 'TypeError' && error.message.includes('Cannot read properties of null')) {
+    return res.status(400).json({ error: 'Existing blog has been deleted' })
   }
 
   next(error)

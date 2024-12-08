@@ -8,11 +8,9 @@ import app from '../app.js'
 
 const api = supertest(app)
 
-
 describe('Blog Api Test', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
-
     const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog))
     const promises = blogObjects.map((blog) => blog.save())
     await Promise.all(promises)
@@ -142,28 +140,58 @@ describe('Blog Api Test', () => {
 
   describe('deleting a blog', () => {
     test('succeed with status code 204 if id is valid', async () => {
-      const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
+      const user = await helper.getUser()
+      const token = helper.getToken(user)
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      const newBlog = {
+        url: 'https://www.codeproject.com/Articles/5372414/Build-Secure-Kubeflow-Pipelines-on-Microsoft-Azure',
+        title: 'Build Secure Kubeflow Pipelines on Microsoft Azure',
+        author: 'Intel',
+        likes: 4600
+      }
+
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = response.body
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
 
       const titles = blogsAtEnd.map((blog) => blog.title)
       assert(!titles.includes(blogToDelete.title))
     })
 
     test('fails with status code 400 if id is invalid', async () => {
+      const user = await helper.getUser()
+      const token = helper.getToken(user)
       const id = '674a70f0548212534d4e6b'
 
-      await api.delete(`/api/blogs/${id}`).expect(400)
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400)
     })
 
-    test('fails with status code 204 if existing blog has been deleted', async () => {
+    test('fails with status code 400 if existing blog has been deleted', async () => {
+      const user = await helper.getUser()
+      const token = helper.getToken(user)
       const id = await helper.nonExistingId()
 
-      await api.delete(`/api/blogs/${id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400)
     })
   })
 
