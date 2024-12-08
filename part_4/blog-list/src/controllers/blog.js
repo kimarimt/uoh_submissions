@@ -5,16 +5,6 @@ import User from '../models/user.js'
 
 const blogsRouter = express.Router()
 
-const getTokenForm = req => {
-  const auth = req.get('authorization')
-
-  if (auth && auth.startsWith('Bearer ')) {
-    return auth.replace('Bearer ', '')
-  }
-
-  return null
-}
-
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog
     .find({})
@@ -30,8 +20,7 @@ blogsRouter.get('/:id', async (req, res) => {
 
 blogsRouter.post('/', async (req, res) => {
   const { url, title, author, likes } = req.body
-
-  const decodedToken = jwt.verify(getTokenForm(req), process.env.SECRET)
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
 
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid' })
