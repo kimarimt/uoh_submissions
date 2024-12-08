@@ -62,19 +62,21 @@ describe('Blog Api Test', () => {
   describe('creating a new blog', () => {
     describe('valid blogs', () => {
       test('a blog with all properties can be added', async () => {
-        const id = await helper.getUserId()
+        const user = await helper.getUser()
+        const token = helper.getToken(user)
 
         const newBlog = {
           title: 'Writing Tests',
           author: 'Joe Smith',
           url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-          userId: id,
+          userId: user.id,
           likes: 5,
         }
 
         await api
           .post('/api/blogs')
           .send(newBlog)
+          .set('Authorization', `Bearer ${token}`)
           .expect(201)
           .expect('Content-Type', /application\/json/)
 
@@ -95,16 +97,21 @@ describe('Blog Api Test', () => {
 
     describe('invalid blogs', () => {
       test('blog titles are required', async () => {
-        const id = helper.getUserId()
+        const user = await helper.getUser()
+        const token = helper.getToken(user)
 
         const newBlog = {
           author: 'Joe Smith',
           url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-          userId: id,
+          userId: user.id,
           likes: 5,
         }
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+          .post('/api/blogs')
+          .set('Authorization', `Bearer ${token}`)
+          .send(newBlog)
+          .expect(400)
 
         const blogsAtEnd = await helper.blogsInDb()
         assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
@@ -112,16 +119,21 @@ describe('Blog Api Test', () => {
     })
 
     test('blog authors are required', async () => {
-      const id = helper.getUserId()
+      const user = await helper.getUser()
+      const token = helper.getToken(user)
 
       const newBlog = {
         title: 'Writing Tests',
         url: 'https://bloglist.fly.dev/jsmith/writing-tests',
-        userId: id,
+        userId: user.id,
         likes: 5,
       }
 
-      await api.post('/api/blogs').send(newBlog).expect(400)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(400)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)

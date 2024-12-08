@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import Blog from '../models/blog.js'
 import User from '../models/user.js'
 
@@ -37,9 +38,22 @@ const usersInDb = async () => {
   return users.map(user => user.toJSON())
 }
 
-const getUserId = async () => {
+const getUser = async () => {
   const user = await usersInDb()
-  return user[0].id
+  return user[0]
+}
+
+const getToken = user => {
+  const userForToken = {
+    user: user.username,
+    id: user.id,
+  }
+
+  const token = jwt.sign(userForToken, process.env.SECRET, {
+    expiresIn: 60 * 60,
+  })
+
+  return token
 }
 
 export default {
@@ -47,5 +61,6 @@ export default {
   nonExistingId,
   blogsInDb,
   usersInDb,
-  getUserId
+  getUser,
+  getToken
 }
