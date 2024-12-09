@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
-import loginService from '../services/login';
 import HomePage from './HomePage';
-
-// agerman, zqert!234984
+import loginService from '../services/login';
+import blogService from '../services/blog';
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -14,6 +13,7 @@ const App = () => {
     const loggedUser = window.localStorage.getItem('blogListUser');
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
+      blogService.setToken(user.token);
       setUser(user);
     }
   }, []);
@@ -24,6 +24,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem('blogListUser', JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
       setUsername('');
       setPassword('');
