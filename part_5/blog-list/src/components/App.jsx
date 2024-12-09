@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
+import Notification from './Notification';
 import HomePage from './HomePage';
 import loginService from '../services/login';
 import blogService from '../services/blog';
@@ -8,6 +9,8 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [color, setColor] = useState('');
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('blogListUser');
@@ -28,8 +31,14 @@ const App = () => {
       setUser(user);
       setUsername('');
       setPassword('');
-    } catch (exception) {
-      console.error(exception);
+    } catch (err) {
+      setMessage('Wrong username or password');
+      setColor('red');
+
+      setTimeout(() => {
+        setMessage(null);
+        setColor('');
+      }, 3000);
     }
   };
 
@@ -41,15 +50,34 @@ const App = () => {
   return (
     <>
       {user ? (
-        <HomePage user={user} handleLogout={handleLogout} />
+        <>
+          <h1>{user.name}&apos;s blogs</h1>
+          {message !== null && <Notification message={message} color={color} />}
+          <HomePage
+            handleLogout={handleLogout}
+            handleMessage={(message) => setMessage(message)}
+            handleColor={(color) => setColor(color)}
+          />
+        </>
       ) : (
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsername={(event) => setUsername(event.target.value)}
-          handlePassword={(event) => setPassword(event.target.value)}
-          handleLogin={handleLogin}
-        />
+        <>
+          <h1>Blog List Login</h1>
+          {message !== null && (
+            <Notification
+              message={message}
+              color={color}
+              handleMessage={(message) => setMessage(message)}
+              handleColor={(color) => setColor(color)}
+            />
+          )}
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsername={(event) => setUsername(event.target.value)}
+            handlePassword={(event) => setPassword(event.target.value)}
+            handleLogin={handleLogin}
+          />
+        </>
       )}
     </>
   );

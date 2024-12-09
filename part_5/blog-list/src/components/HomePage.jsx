@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import BlogForm from './BlogForm';
 import blogService from '../services/blog';
 
-const HomePage = ({ user, handleLogout }) => {
+const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
   const [blogs, setBlogs] = useState(null);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -21,27 +21,41 @@ const HomePage = ({ user, handleLogout }) => {
   const handleNewBlog = (event) => {
     event.preventDefault();
 
-    try {
-      const blogObj = {
-        title,
-        author,
-        url
-      }
+    const blogObj = {
+      title,
+      author,
+      url,
+    };
 
-      blogService.create(blogObj).then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+    blogService
+      .create(blogObj)
+      .then((returnedBlog) => {
+        setBlogs(blogs.concat(returnedBlog));
+        handleMessage(`New blog ${title} by ${author} has been added`);
+        handleColor('green');
+        setTitle('');
+        setAuthor('');
+        setUrl('');
+
+        setTimeout(() => {
+          handleMessage(null);
+          handleColor('');
+        }, 3000);
       })
-    } catch (exception) {
-      console.error(exception)
-    }
+      .catch((error) => {
+        console.log(error);
+        handleMessage(error.response.data.error);
+        handleColor('red');
+
+        setTimeout(() => {
+          handleMessage(null);
+          handleColor('');
+        }, 3000);
+      });
   };
 
   return (
     <div>
-      <h1>{user.name}&apos;s blogs</h1>
       <p>
         logged in <button onClick={handleLogout}>logout</button>
       </p>
@@ -69,7 +83,9 @@ const HomePage = ({ user, handleLogout }) => {
             ))}
           </>
         ) : (
-          <p><strong>No blogs yet! Add one using the form above</strong></p>
+          <p>
+            <strong>No blogs yet! Add one using the form above</strong>
+          </p>
         )}
       </div>
     </div>

@@ -7,7 +7,6 @@ const LoginForm = ({
 }) => {
   return (
     <div>
-      <h1>Blog List Login</h1>
       <form onSubmit={handleLogin}>
         <div>
           <label htmlFor='username'>Username: </label>
