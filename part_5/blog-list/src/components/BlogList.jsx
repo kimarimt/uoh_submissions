@@ -1,12 +1,14 @@
 import BlogTile from './BlogTile';
 
 const BlogList = ({ blogs, handleUpdate, name }) => {
+  const blogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
+
   return (
     <>
-      {blogs.length !== 0 ? (
+      {blogsByLikes.length !== 0 ? (
         <>
           <h2>Blog List</h2>
-          {blogs.map((blog) => (
+          {blogsByLikes.map((blog) => (
             <BlogTile
               key={blog.id}
               blog={blog}
