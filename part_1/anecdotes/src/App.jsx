@@ -24,7 +24,7 @@ const App = () => {
 
   const [selected, setSelected] = useState(startIndex);
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
-  
+
   const maxIndex = votes.findIndex((vote) => vote === Math.max(...votes));
 
   const handleSelected = () => {
