@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import BlogForm from './BlogForm';
+
 import Toggable from './Togglable';
+import BlogForm from './BlogForm';
+import BlogList from './BlogList';
+
 import blogService from '../services/blog';
 
-const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
+const HomePage = ({ name, handleLogout, alertUser }) => {
   const [blogs, setBlogs] = useState(null);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => {
@@ -19,9 +19,7 @@ const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
     return;
   }
 
-  const handleNewBlog = (event) => {
-    event.preventDefault();
-
+  const addBlog = ({ title, author, url }) => {
     const blogObj = {
       title,
       author,
@@ -30,66 +28,26 @@ const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
 
     blogService
       .create(blogObj)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
-        handleMessage(`New blog ${title} by ${author} has been added`);
-        handleColor('green');
-        setTitle('');
-        setAuthor('');
-        setUrl('');
-
-        setTimeout(() => {
-          handleMessage(null);
-          handleColor('');
-        }, 3000);
+      .then((result) => {
+        const message = `New blog ${title} by ${author} has been added`;
+        alertUser(message, 'green');
+        setBlogs(blogs.concat(result));
       })
       .catch((error) => {
-        console.log(error);
-        handleMessage(error.response.data.error);
-        handleColor('red');
-
-        setTimeout(() => {
-          handleMessage(null);
-          handleColor('');
-        }, 3000);
+        const message = error.response.data.error;
+        alertUser(message, 'red');
       });
   };
 
   return (
     <div>
       <p>
-        logged in <button onClick={handleLogout}>logout</button>
+        {name} is logged in <button onClick={handleLogout}>logout</button>
       </p>
-      <>
-        <Toggable title='Add a new blog' buttonLabel='Add Blog'>
-          <BlogForm
-            title={title}
-            author={author}
-            url={url}
-            handleNewBlog={handleNewBlog}
-            handleTitle={({ target }) => setTitle(target.value)}
-            handleAuthor={({ target }) => setAuthor(target.value)}
-            handleUrl={({ target }) => setUrl(target.value)}
-          />
-        </Toggable>
-      </>
-      <br />
-      <div>
-        {blogs.length !== 0 ? (
-          <>
-            <h2>Blog List</h2>
-            {blogs.map((blog) => (
-              <p key={blog.id}>
-                {blog.title} {blog.author}
-              </p>
-            ))}
-          </>
-        ) : (
-          <p>
-            <strong>No blogs yet! Add one using the form above</strong>
-          </p>
-        )}
-      </div>
+      <Toggable title='Add a new blog' buttonLabel='Add Blog'>
+        <BlogForm addBlog={addBlog} />
+      </Toggable>
+      <BlogList blogs={blogs} />
     </div>
   );
 };
