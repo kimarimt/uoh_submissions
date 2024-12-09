@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import BlogForm from './BlogForm';
+import Toggable from './Togglable';
 import blogService from '../services/blog';
 
 const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
@@ -60,16 +61,17 @@ const HomePage = ({ handleLogout, handleMessage, handleColor }) => {
         logged in <button onClick={handleLogout}>logout</button>
       </p>
       <>
-        <h2>Add new blog</h2>
-        <BlogForm
-          title={title}
-          author={author}
-          url={url}
-          handleNewBlog={handleNewBlog}
-          handleTitle={({ target }) => setTitle(target.value)}
-          handleAuthor={({ target }) => setAuthor(target.value)}
-          handleUrl={({ target }) => setUrl(target.value)}
-        />
+        <Toggable title='Add a new blog' buttonLabel='Add Blog'>
+          <BlogForm
+            title={title}
+            author={author}
+            url={url}
+            handleNewBlog={handleNewBlog}
+            handleTitle={({ target }) => setTitle(target.value)}
+            handleAuthor={({ target }) => setAuthor(target.value)}
+            handleUrl={({ target }) => setUrl(target.value)}
+          />
+        </Toggable>
       </>
       <br />
       <div>
