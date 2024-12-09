@@ -15,10 +15,6 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
     });
   }, []);
 
-  if (blogs === null) {
-    return;
-  }
-
   const addBlog = ({ title, author, url }) => {
     const blogObj = {
       title,
@@ -39,16 +35,35 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
       });
   };
 
+  const updateBlogLikes = (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+
+    blogService
+      .update(id, updatedBlog)
+      .then((changedBlog) => {
+        console.log(changedBlog);
+        setBlogs(blogs.map((blog) => (blog.id === id ? changedBlog : blog)));
+        alertUser(`${blog.title} by ${blog.author} gets one like!`, 'green');
+      })
+      .catch((error) => {
+        const message = error.response.data.error;
+        alertUser(message, 'red');
+      });
+  };
+
   return (
-    <div>
-      <p>
-        {name} is logged in <button onClick={handleLogout}>logout</button>
-      </p>
-      <Toggable title='Add a new blog' buttonLabel='Add Blog'>
-        <BlogForm addBlog={addBlog} />
-      </Toggable>
-      <BlogList blogs={blogs} />
-    </div>
+    blogs && (
+      <div>
+        <p>
+          {name} is logged in <button onClick={handleLogout}>logout</button>
+        </p>
+        <Toggable title='Add a new blog' buttonLabel='Add Blog'>
+          <BlogForm addBlog={addBlog} />
+        </Toggable>
+        <BlogList blogs={blogs} handleUpdate={updateBlogLikes} name={name} />
+      </div>
+    )
   );
 };
 

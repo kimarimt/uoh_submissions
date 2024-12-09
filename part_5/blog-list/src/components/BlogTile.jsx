@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const BlogTile = ({ blog }) => {
+const BlogTile = ({ blog, name, onClick }) => {
   const [showDetail, setShowDetail] = useState(false);
   const { title, author } = blog;
 
@@ -15,11 +15,13 @@ const BlogTile = ({ blog }) => {
         </p>
         <div style={{ display: showDetail ? 'block' : 'none' }}>
           <hr />
-          <a target='blank' href={blog.url}>{blog.url}</a>
+          <a target='blank' href={blog.url}>
+            {blog.url}
+          </a>
           <p>
-            Likes: {blog.likes} <button>Like</button>
+            Likes: {blog.likes} <button onClick={onClick}>Like</button>
           </p>
-          <p>{blog.user.name}</p>
+          <p>{name}</p>
         </div>
       </div>
     </>
