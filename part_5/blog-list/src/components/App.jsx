@@ -43,10 +43,11 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    window.localStorage.clear();
+    window.localStorage.removeItem('blogListUser');
     setUser(null);
+    blogService.setToken(null);
   };
-
+  
   return (
     <>
       {user ? (
