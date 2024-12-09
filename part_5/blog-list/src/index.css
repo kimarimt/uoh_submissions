@@ -6,3 +6,34 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.blog-tile {
+  border: 4px solid darkgray;
+  margin: 0.5rem 0;
+  padding: 1rem;
+}
+
+.blog-tile p {
+  margin: 0.5rem 0;
+}
+
+.blog-tile a {
+  text-decoration: none;
+}
+
+.blog-tile a:hover {
+  text-decoration: underline;
+}
+
+.blog-tile div {
+  margin-top: 1rem;
+}
+
+.blog-title {
+  margin: 0;
+}
+
+.blog-tile span {
+  color: gray;
+  font-weight: bold;
+}

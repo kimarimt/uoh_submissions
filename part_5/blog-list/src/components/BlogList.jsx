@@ -1,12 +1,12 @@
+import BlogTile from './BlogTile';
+
 const BlogList = ({ blogs }) => (
-  <div>
+  <>
     {blogs.length !== 0 ? (
       <>
         <h2>Blog List</h2>
         {blogs.map((blog) => (
-          <p key={blog.id}>
-            {blog.title} {blog.author}
-          </p>
+          <BlogTile key={blog.id} blog={blog} />
         ))}
       </>
     ) : (
@@ -14,7 +14,7 @@ const BlogList = ({ blogs }) => (
         <strong>No blogs yet! Add one using the form above</strong>
       </p>
     )}
-  </div>
+  </>
 );
 
 export default BlogList;
