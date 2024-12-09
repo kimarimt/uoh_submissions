@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoginForm from './LoginForm';
 import loginService from '../services/login';
 import HomePage from './HomePage';
@@ -10,12 +10,20 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('blogListUser');
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      setUser(user);
+    }
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
-
+      window.localStorage.setItem('blogListUser', JSON.stringify(user));
       setUser(user);
       setUsername('');
       setPassword('');
@@ -24,10 +32,15 @@ const App = () => {
     }
   };
 
+  const handleLogout = () => {
+    window.localStorage.clear();
+    setUser(null);
+  };
+
   return (
     <>
       {user ? (
-        <HomePage user={user} />
+        <HomePage user={user} handleLogout={handleLogout} />
       ) : (
         <LoginForm
           username={username}

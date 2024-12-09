@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import blogService from '../services/blog';
 
-const HomePage = ({ user }) => {
+const HomePage = ({ user, handleLogout }) => {
   const [blogs, setBlogs] = useState(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const HomePage = ({ user }) => {
     <div>
       <h1>{user.name}&apos;s blogs</h1>
       <p>
-        logged in <button>logout</button>
+        logged in <button onClick={handleLogout}>logout</button>
       </p>
       <br />
       <div>
