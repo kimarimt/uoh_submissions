@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
-  const [showDetail, setShowDetail] = useState(false);
-  const { title, author } = blog;
+  const [showDetail, setShowDetail] = useState(false)
+  const { title, author } = blog
   const currentUser = JSON.parse(
     window.localStorage.getItem('blogListUser')
-  ).name;
+  ).name
 
   return (
     <>
@@ -31,7 +32,14 @@ const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default BlogTile;
+BlogTile.propTypes = {
+  blog: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
+}
+
+export default BlogTile

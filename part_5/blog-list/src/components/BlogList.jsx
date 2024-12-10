@@ -1,7 +1,8 @@
-import BlogTile from './BlogTile';
+import BlogTile from './BlogTile'
+import PropTypes from 'prop-types'
 
 const BlogList = ({ blogs, name, onUpdate, onDelete }) => {
-  const blogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
+  const blogsByLikes = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
     <>
@@ -24,7 +25,14 @@ const BlogList = ({ blogs, name, onUpdate, onDelete }) => {
         </p>
       )}
     </>
-  );
-};
+  )
+}
 
-export default BlogList;
+BlogList.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  name: PropTypes.string.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
+}
+
+export default BlogList
