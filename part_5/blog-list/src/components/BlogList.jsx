@@ -1,6 +1,6 @@
 import BlogTile from './BlogTile';
 
-const BlogList = ({ blogs, handleUpdate, name }) => {
+const BlogList = ({ blogs, name, onUpdate, onDelete }) => {
   const blogsByLikes = blogs.sort((a, b) => b.likes - a.likes);
 
   return (
@@ -13,7 +13,8 @@ const BlogList = ({ blogs, handleUpdate, name }) => {
               key={blog.id}
               blog={blog}
               name={name}
-              onClick={() => handleUpdate(blog.id)}
+              onUpdate={() => onUpdate(blog.id)}
+              onDelete={() => onDelete(blog.id)}
             />
           ))}
         </>

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
-const BlogTile = ({ blog, name, onClick }) => {
+const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
   const [showDetail, setShowDetail] = useState(false);
   const { title, author } = blog;
+  const currentUser = JSON.parse(
+    window.localStorage.getItem('blogListUser')
+  ).name;
 
   return (
     <>
@@ -19,9 +22,12 @@ const BlogTile = ({ blog, name, onClick }) => {
             {blog.url}
           </a>
           <p>
-            Likes: {blog.likes} <button onClick={onClick}>Like</button>
+            Likes: {blog.likes} <button onClick={onUpdate}>Like</button>
           </p>
           <p>{name}</p>
+          {blog.user.name === currentUser && (
+            <button onClick={onDelete}>Delete</button>
+          )}
         </div>
       </div>
     </>

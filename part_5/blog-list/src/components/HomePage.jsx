@@ -23,7 +23,7 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
     };
 
     blogService
-      .create(blogObj)
+      .createBlog(blogObj)
       .then((result) => {
         const message = `New blog ${title} by ${author} has been added`;
         alertUser(message, 'green');
@@ -40,16 +40,32 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
     const updatedBlog = { ...blog, likes: blog.likes + 1 };
 
     blogService
-      .update(id, updatedBlog)
+      .updateBlog(id, updatedBlog)
       .then((changedBlog) => {
-        console.log(changedBlog);
         setBlogs(blogs.map((blog) => (blog.id === id ? changedBlog : blog)));
-        alertUser(`${blog.title} by ${blog.author} gets one like!`, 'green');
       })
       .catch((error) => {
         const message = error.response.data.error;
         alertUser(message, 'red');
       });
+  };
+
+  const deleteBlog = (id) => {
+    const blog = blogs.find((blog) => blog.id === id);
+    const message = `Remove blog '${blog.title}' by ${blog.author}?`;
+
+    if (window.confirm(message)) {
+      blogService
+        .deleteBlog(id)
+        .then(() => {
+          setBlogs(blogs.filter((blog) => blog.id !== id));
+          alertUser('Blog successfully deleted', 'green');
+        })
+        .catch((error) => {
+          const message = error.response.data.error;
+          alertUser(message, 'red');
+        });
+    }
   };
 
   return (
@@ -61,7 +77,12 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
         <Toggable title='Add a new blog' buttonLabel='Add Blog'>
           <BlogForm addBlog={addBlog} />
         </Toggable>
-        <BlogList blogs={blogs} handleUpdate={updateBlogLikes} name={name} />
+        <BlogList
+          blogs={blogs}
+          name={name}
+          onUpdate={updateBlogLikes}
+          onDelete={deleteBlog}
+        />
       </div>
     )
   );
