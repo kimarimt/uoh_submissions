@@ -46,4 +46,19 @@ describe('<BlogTile />', () => {
 
     screen.debug(likes)
   })
+
+  test('clicking `like` button twice calls event handler twice', async () => {
+    const mockHandler = vi.fn()
+
+    render(
+      <BlogTile blog={blog} onUpdate={mockHandler} />
+    )
+
+    const user = userEvent.setup()
+    const button = screen.getByText('Like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
