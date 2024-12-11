@@ -51,6 +51,7 @@ const App = () => {
   }
 
   const title = user ? 'BlogList Home Page' : 'BlogList Login'
+  const currentUser = user ? JSON.parse(window.localStorage.getItem('blogListUser')).name : ''
 
   return (
     <>
@@ -59,6 +60,7 @@ const App = () => {
         {user ? (
           <HomePage
             name={user.name}
+            currentUser={currentUser}
             handleLogout={handleLogout}
             alertUser={alertUser}
           />

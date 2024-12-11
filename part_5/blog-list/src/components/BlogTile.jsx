@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
+const BlogTile = ({ blog, name, currentUser, onUpdate, onDelete }) => {
   const [showDetail, setShowDetail] = useState(false)
-  const { title, author } = blog
+  const { title, author, url, likes } = blog
 
   return (
     <>
@@ -16,14 +16,14 @@ const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
         </p>
         <div className="blog-details" style={{ display: showDetail ? 'block' : 'none' }}>
           <hr />
-          <a target='blank' href={blog.url}>
-            {blog.url}
+          <a target='blank' href={url}>
+            {url}
           </a>
           <p>
-            Likes: {blog.likes} <button onClick={onUpdate}>Like</button>
+            Likes: {likes} <button onClick={onUpdate}>Like</button>
           </p>
           <p>{name}</p>
-          <button onClick={onDelete}>Delete</button>
+          { name === currentUser && ( <button onClick={onDelete}>Delete</button> ) }
         </div>
       </div>
     </>
@@ -33,6 +33,7 @@ const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
 BlogTile.propTypes = {
   blog: PropTypes.object,
   name: PropTypes.string,
+  currentUser: PropTypes.string,
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func
 }

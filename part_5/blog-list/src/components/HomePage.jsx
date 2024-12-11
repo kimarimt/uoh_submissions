@@ -7,7 +7,7 @@ import BlogList from './BlogList'
 
 import blogService from '../services/blog'
 
-const HomePage = ({ name, handleLogout, alertUser }) => {
+const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
   const [blogs, setBlogs] = useState(null)
 
   useEffect(() => {
@@ -39,6 +39,8 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
   const updateBlogLikes = (id) => {
     const blog = blogs.find((blog) => blog.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
+
+    console.log(blog)
 
     blogService
       .updateBlog(id, updatedBlog)
@@ -81,6 +83,7 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
         <BlogList
           blogs={blogs}
           name={name}
+          currentUser={currentUser}
           onUpdate={updateBlogLikes}
           onDelete={deleteBlog}
         />
@@ -91,6 +94,7 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
 
 HomePage.propTypes = {
   name: PropTypes.string,
+  currentUser: PropTypes.string,
   handleLogout: PropTypes.func,
   alertUser: PropTypes.func
 }
