@@ -90,9 +90,9 @@ const HomePage = ({ name, handleLogout, alertUser }) => {
 }
 
 HomePage.propTypes = {
-  name: PropTypes.string.isRequired,
-  handleLogout: PropTypes.func.isRequired,
-  alertUser: PropTypes.func.isRequired
+  name: PropTypes.string,
+  handleLogout: PropTypes.func,
+  alertUser: PropTypes.func
 }
 
 export default HomePage

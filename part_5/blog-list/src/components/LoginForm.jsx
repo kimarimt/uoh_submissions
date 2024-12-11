@@ -42,7 +42,7 @@ const LoginForm = ({ loginUser }) => {
 }
 
 LoginForm.propTypes = {
-  loginUser: PropTypes.func.isRequired
+  loginUser: PropTypes.func
 }
 
 export default LoginForm

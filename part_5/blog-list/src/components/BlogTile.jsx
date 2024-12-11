@@ -31,7 +31,7 @@ const BlogTile = ({ blog, name, onUpdate, onDelete }) => {
 }
 
 BlogTile.propTypes = {
-  blog: PropTypes.object.isRequired,
+  blog: PropTypes.object,
   name: PropTypes.string,
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func

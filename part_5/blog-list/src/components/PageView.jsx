@@ -10,8 +10,8 @@ const PageView = ({ title, children }) => {
 }
 
 PageView.propTypes = {
-  title: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired
+  title: PropTypes.string,
+  children: PropTypes.node
 }
 
 export default PageView
