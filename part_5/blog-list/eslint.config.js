@@ -3,14 +3,18 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import viteGlobals from 'eslint-plugin-vitest-globals'
 
 export default [
   { ignores: ['dist', 'vite.config.js', 'node_modules'] },
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,jsx,test.jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: [
+        globals.browser,
+        viteGlobals
+      ],
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
@@ -22,6 +26,7 @@ export default [
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'vite-globals': viteGlobals
     },
     rules: {
       ...js.configs.recommended.rules,
