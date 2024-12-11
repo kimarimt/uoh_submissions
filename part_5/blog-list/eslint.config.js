@@ -11,10 +11,10 @@ export default [
     files: ['**/*.{js,jsx,test.jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: [
-        globals.browser,
-        viteGlobals
-      ],
+      globals: {
+        ...globals.browser,
+        ...viteGlobals.environments.env.globals
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },

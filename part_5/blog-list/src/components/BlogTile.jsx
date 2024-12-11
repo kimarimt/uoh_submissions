@@ -10,16 +10,16 @@ const BlogTile = ({ blog, name, currentUser, onUpdate, onDelete }) => {
       <div className='blog-tile'>
         <p className='blog-title'>
           <span className='title'>{title}</span> | <span className='author'>{author}</span>{' '}
-          <button onClick={() => setShowDetail(!showDetail)}>
+          <button className='show-detail' onClick={() => setShowDetail(!showDetail)}>
             {showDetail ? 'Hide' : 'Show'} Info
           </button>
         </p>
         <div className="blog-details" style={{ display: showDetail ? 'block' : 'none' }}>
           <hr />
-          <a target='blank' href={url}>
+          <a className="blog-url" target='blank' href={url}>
             {url}
           </a>
-          <p>
+          <p className="blog-likes">
             Likes: {likes} <button onClick={onUpdate}>Like</button>
           </p>
           <p>{name}</p>

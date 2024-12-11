@@ -40,8 +40,6 @@ const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
     const blog = blogs.find((blog) => blog.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
 
-    console.log(blog)
-
     blogService
       .updateBlog(id, updatedBlog)
       .then((changedBlog) => {
