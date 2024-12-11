@@ -43,8 +43,6 @@ describe('<BlogTile />', () => {
 
     const likes = container.querySelector('.blog-likes')
     expect(likes).toBeDefined()
-
-    screen.debug(likes)
   })
 
   test('clicking `like` button twice calls event handler twice', async () => {
