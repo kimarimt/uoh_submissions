@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import BlogTile from '../components/BlogTile'
 
@@ -17,10 +17,10 @@ describe('<BlogTile />', () => {
     )
 
     const title = container.querySelector('.title')
-    expect(title).toBeDefined()
+    expect(title.textContent).to.eq(blog.title)
 
     const author = container.querySelector('.author')
-    expect(author).toBeDefined()
+    expect(author.textContent).to.eq(blog.author)
 
     const detail = container.querySelector('.blog-details')
     expect(detail).toHaveStyle('display: none')
@@ -39,9 +39,11 @@ describe('<BlogTile />', () => {
     expect(details).toHaveStyle('display: block')
 
     const url = container.querySelector('.blog-url')
-    expect(url).toBeDefined()
+    expect(url.textContent).to.eq(blog.url)
 
     const likes = container.querySelector('.blog-likes')
-    expect(likes).toBeDefined()
+    expect(likes).toHaveTextContent(`Likes: ${blog.likes}`)
+
+    screen.debug(likes)
   })
 })
