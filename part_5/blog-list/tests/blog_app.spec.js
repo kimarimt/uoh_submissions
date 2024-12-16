@@ -37,4 +37,25 @@ test.describe('Blog App', () => {
       await expect(page.getByText('testAdmin is loged in')).not.toBeVisible()
     })
   })
+
+  test.describe('when logged in', () => {
+    test.beforeEach(async ({ page }) => {
+      await helper.loginWith(page, 'tester', 'secret')
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      const newBlog = {
+        title: 'A blog from playwright',
+        author: 'John Doe',
+        url: 'http://www.example.com'
+      }
+
+      await helper.createBlog(page, newBlog)
+      await expect(page.getByText(`${newBlog.title} | ${newBlog.author}`)).toBeVisible()
+
+      const notification = page.locator('.message')
+      await expect(notification).toHaveText(`New blog ${newBlog.title} by ${newBlog.author} has been added`)
+      await expect(notification).toHaveCSS('color', 'rgb(0, 128, 0)')
+    })
+  })
 })

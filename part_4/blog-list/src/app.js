@@ -29,7 +29,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/blogs', blogsRouter)
 
 if (process.env.NODE_ENV === 'test') {
-  app.use('/api/testing/reset', testRouter)
+  app.use('/api/testing', testRouter)
 }
 
 app.use(middleware.unknownEndpoint)

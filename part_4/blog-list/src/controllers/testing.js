@@ -10,3 +10,5 @@ testRouter.post('/reset', async (req, res) => {
 
   res.status(204).end()
 })
+
+export default testRouter
