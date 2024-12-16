@@ -20,7 +20,7 @@ const BlogTile = ({ blog, name, currentUser, onUpdate, onDelete }) => {
             {url}
           </a>
           <p className="blog-likes">
-            Likes: {likes} <button onClick={onUpdate}>Like</button>
+            Likes: <span data-testid='likes'>{likes}</span> <button onClick={onUpdate}>Like</button>
           </p>
           <p>{name}</p>
           { name === currentUser && ( <button onClick={onDelete}>Delete</button> ) }

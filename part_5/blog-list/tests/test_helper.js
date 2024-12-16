@@ -1,3 +1,9 @@
+const testBlog = {
+  title: 'A blog from playwright',
+  author: 'John Doe',
+  url: 'http://www.example.com'
+}
+
 const loginWith = async (page, username, password) => {
   await page.getByTestId('username').fill(username)
   await page.getByTestId('password').fill(password)
@@ -5,7 +11,9 @@ const loginWith = async (page, username, password) => {
     .click()
 }
 
-const createBlog = async (page, { title, author, url }) => {
+const createBlog = async (page, blog = testBlog) => {
+  const { title, author, url } = blog
+
   await page.getByRole('button', { name: 'Add Blog' }).click()
   await page.getByTestId('title').fill(title)
   await page.getByTestId('author').fill(author)
@@ -15,6 +23,7 @@ const createBlog = async (page, { title, author, url }) => {
 }
 
 export default {
+  testBlog,
   loginWith,
   createBlog
 }

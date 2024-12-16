@@ -33,7 +33,8 @@
   margin: 0;
 }
 
-.blog-tile span {
+.title,
+.author {
   color: gray;
   font-weight: bold;
 }
