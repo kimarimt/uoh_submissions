@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test'
 import helper from './test_helper.js'
-import exp from 'constants'
 
 test.describe('Blog App', () => {
   test.beforeEach(async ({ page, request }) => {
@@ -31,10 +30,8 @@ test.describe('Blog App', () => {
 
     test('fails with the wrong credentials', async ({ page }) => {
       await helper.loginWith(page, 'tester', 'wrong')
-      const notification = page.locator('.message')
-      await expect(notification).toBeVisible()
-      await expect(notification).toHaveText('invalid username or password')
-      await expect(notification).toHaveCSS('color', 'rgb(255, 0, 0)')
+      const message = 'invalid username or password'
+      await helper.createNotification(page, message, 'rgb(255, 0, 0)')
       await expect(page.getByText('testAdmin is loged in')).not.toBeVisible()
     })
   })
@@ -47,10 +44,8 @@ test.describe('Blog App', () => {
     test('a new blog can be created', async ({ page }) => {
       await helper.createBlog(page)
       await expect(page.getByText(`${helper.testBlog.title} | ${helper.testBlog.author}`)).toBeVisible()
-
-      const notification = page.locator('.message')
-      await expect(notification).toHaveText(`New blog ${helper.testBlog.title} by ${helper.testBlog.author} has been added`)
-      await expect(notification).toHaveCSS('color', 'rgb(0, 128, 0)')
+      const message = `New blog ${helper.testBlog.title} by ${helper.testBlog.author} has been added`
+      await helper.createNotification(page, message)
     })
 
     test.describe('when blogs are created', () => {
@@ -65,6 +60,18 @@ test.describe('Blog App', () => {
           .click()
 
         await expect(page.getByTestId('likes')).toHaveText('1')
+      })
+
+      test.describe('deleting a blog', () => {
+        test('blog doesn\'t appear on the screen when `delete` button is clicked', async ({ page }) => {
+          page.on('dialog', async dialog => await dialog.accept())
+          await page.getByRole('button', { name: 'Show Info' })
+            .click()
+          await page.getByRole('button', { name: 'Delete' })
+            .click()
+          await expect(page.getByText(`New blog ${helper.testBlog.title} by ${helper.testBlog.author} has been added`)).not.toBeVisible()
+          await helper.createNotification(page, 'Blog successfully deleted')
+        })
       })
     })
   })

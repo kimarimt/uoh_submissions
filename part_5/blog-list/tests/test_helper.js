@@ -1,3 +1,5 @@
+import { expect } from '@playwright/test'
+
 const testBlog = {
   title: 'A blog from playwright',
   author: 'John Doe',
@@ -22,8 +24,16 @@ const createBlog = async (page, blog = testBlog) => {
   await page.getByRole('button', { name: 'Cancel' }).click()
 }
 
+const createNotification = async (page, message, color='rgb(0, 128, 0)') => {
+  const notification = page.locator('.message')
+  await expect(notification).toBeVisible()
+  await expect(notification).toHaveText(message)
+  await expect(notification).toHaveCSS('color', color)
+}
+
 export default {
   testBlog,
   loginWith,
-  createBlog
+  createBlog,
+  createNotification
 }
