@@ -80,7 +80,6 @@ const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
         </Toggable>
         <BlogList
           blogs={blogs}
-          name={name}
           currentUser={currentUser}
           onUpdate={updateBlogLikes}
           onDelete={deleteBlog}

@@ -1,7 +1,7 @@
 import BlogTile from './BlogTile'
 import PropTypes from 'prop-types'
 
-const BlogList = ({ blogs, name, currentUser, onUpdate, onDelete }) => {
+const BlogList = ({ blogs, currentUser, onUpdate, onDelete }) => {
   const blogsByLikes = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
@@ -13,7 +13,6 @@ const BlogList = ({ blogs, name, currentUser, onUpdate, onDelete }) => {
             <BlogTile
               key={blog.id}
               blog={blog}
-              name={name}
               currentUser={currentUser}
               onUpdate={() => onUpdate(blog.id)}
               onDelete={() => onDelete(blog.id)}
@@ -31,7 +30,6 @@ const BlogList = ({ blogs, name, currentUser, onUpdate, onDelete }) => {
 
 BlogList.propTypes = {
   blogs: PropTypes.array.isRequired,
-  name: PropTypes.string,
   currentUser: PropTypes.string,
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func

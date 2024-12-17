@@ -56,6 +56,7 @@ test.describe('Blog App', () => {
       test('click a blog\'s `like` button updates number of likes', async ({ page }) => {
         await page.getByRole('button', { name: 'Show Info' })
           .click()
+
         await page.getByRole('button', { name: 'Like' })
           .click()
 
