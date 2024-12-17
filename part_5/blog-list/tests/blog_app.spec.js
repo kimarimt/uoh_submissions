@@ -4,13 +4,22 @@ import helper from './test_helper.js'
 test.describe('Blog App', () => {
   test.beforeEach(async ({ page, request }) => {
     await request.post('/api/testing/reset')
-    await request.post('/api/users', {
-      data: {
-        name: 'testAdmin',
+
+    await helper.createUser(
+      request,
+      { name: 'testAdmin',
         username: 'tester',
         password: 'secret'
       }
-    })
+    )
+
+    await helper.createUser(
+      request,
+      { name: 'testUser',
+        username: 'johnsmith',
+        password: 'examplePassword'
+      }
+    )
 
     await page.goto('/')
   })
@@ -39,6 +48,7 @@ test.describe('Blog App', () => {
   test.describe('when logged in', () => {
     test.beforeEach(async ({ page }) => {
       await helper.loginWith(page, 'tester', 'secret')
+      await page.getByRole('button',)
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -51,27 +61,35 @@ test.describe('Blog App', () => {
     test.describe('when blogs are created', () => {
       test.beforeEach(async ({ page }) => {
         await helper.createBlog(page)
+        await page.getByRole('button', { name: 'Show Info' })
+          .click()
       })
 
       test('click a blog\'s `like` button updates number of likes', async ({ page }) => {
-        await page.getByRole('button', { name: 'Show Info' })
-          .click()
-
         await page.getByRole('button', { name: 'Like' })
           .click()
-
         await expect(page.getByTestId('likes')).toHaveText('1')
       })
 
       test.describe('deleting a blog', () => {
         test('blog doesn\'t appear on the screen when `delete` button is clicked', async ({ page }) => {
           page.on('dialog', async dialog => await dialog.accept())
-          await page.getByRole('button', { name: 'Show Info' })
-            .click()
           await page.getByRole('button', { name: 'Delete' })
             .click()
           await expect(page.getByText(`New blog ${helper.testBlog.title} by ${helper.testBlog.author} has been added`)).not.toBeVisible()
           await helper.createNotification(page, 'Blog successfully deleted')
+        })
+
+        test('`delete` is only shown when the user who added it is logged in', async ({ page }) => {
+          const deleteButton = page.getByRole('button', { name: 'Delete' })
+          await expect(deleteButton).toBeVisible()
+
+          await page.getByRole('button', { name: 'logout' })
+            .click()
+          await helper.loginWith(page, 'johnsmith', 'examplePassword')
+          await page.getByRole('button', { name: 'Show Info' })
+            .click()
+          await expect(deleteButton).not.toBeVisible()
         })
       })
     })

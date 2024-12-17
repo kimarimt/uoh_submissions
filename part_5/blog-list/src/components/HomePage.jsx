@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 
 import Toggable from './Togglable'
@@ -9,6 +9,8 @@ import blogService from '../services/blog'
 
 const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
   const [blogs, setBlogs] = useState(null)
+  const blogFormRef = useRef()
+
 
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => {
@@ -23,6 +25,7 @@ const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
       url,
     }
 
+    blogFormRef.current.toggle()
     blogService
       .createBlog(blogObj)
       .then((result) => {
@@ -75,7 +78,7 @@ const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
         <p>
           {name} is logged in <button onClick={handleLogout}>logout</button>
         </p>
-        <Toggable title='Add a new blog' buttonLabel='Add Blog'>
+        <Toggable title='Add a new blog' buttonLabel='Add Blog' ref={blogFormRef}>
           <BlogForm addBlog={addBlog} />
         </Toggable>
         <BlogList
