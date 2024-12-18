@@ -10,7 +10,7 @@ const BlogTile = ({ blog, currentUser, onUpdate, onDelete }) => {
 
       <div className='blog-tile'>
         <p className='blog-title'>
-          <span className='title'>{title}</span> | <span className='author'>{author}</span>{' '}
+          <span className='title'>{title}</span> | <span className='author'>{author}</span>
           <button className='show-detail' onClick={() => setShowDetail(!showDetail)}>
             {showDetail ? 'Hide' : 'Show'} Info
           </button>
@@ -21,7 +21,7 @@ const BlogTile = ({ blog, currentUser, onUpdate, onDelete }) => {
             {url}
           </a>
           <p className="blog-likes">
-            Likes: <span data-testid='likes'>{likes}</span> <button onClick={onUpdate}>Like</button>
+            Likes: <span data-testid='likes' className='likes'>{likes}</span> <button onClick={onUpdate}>Like</button>
           </p>
           <p>{user.name}</p>
           { user.name === currentUser && ( <button onClick={onDelete}>Delete</button> ) }

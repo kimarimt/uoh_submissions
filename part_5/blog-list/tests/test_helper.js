@@ -22,6 +22,7 @@ const createBlog = async (page, blog = testBlog) => {
   await page.getByTestId('url').fill(url)
   await page.getByRole('button', { name: 'Create' })
     .click()
+  await page.getByText(`${title} | ${author}`).waitFor()
 }
 
 const createUser = async (request, data) => {
@@ -37,10 +38,18 @@ const createNotification = async (page, message, color='rgb(0, 128, 0)') => {
   await expect(notification).toHaveCSS('color', color)
 }
 
+const handleClicks = async (page, blog) => {
+  await blog
+    .getByRole('button', { name: 'Like' })
+    .click()
+  await page.waitForSelector('.likes')
+}
+
 export default {
   testBlog,
   loginWith,
   createBlog,
   createUser,
-  createNotification
+  createNotification,
+  handleClicks
 }

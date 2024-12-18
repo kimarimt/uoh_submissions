@@ -94,4 +94,42 @@ test.describe('Blog App', () => {
       })
     })
   })
+
+  test.describe('sorting blogs by like', () => {
+    test.beforeEach(async ({ page }) => {
+      await helper.loginWith(page, 'tester', 'secret')
+      await helper.createBlog(page)
+      await helper.createBlog(page, {
+        title: 'testTitle',
+        author: 'testAuthor',
+        url: 'http://www.example.com'
+      })
+    })
+
+    test.only('blog are sorted from most to least likes', async ({ page }) => {
+      const blogs = await page.locator('.blog-tile').all()
+
+      const firstBlog = blogs[0]
+      const lastBlog = blogs[1]
+
+      await firstBlog.getByRole('button', { name: 'Show Info' }).click()
+      await helper.handleClicks(page, firstBlog)
+      await helper.handleClicks(page, firstBlog)
+      await helper.handleClicks(page, firstBlog)
+      await helper.handleClicks(page, firstBlog)
+      await helper.handleClicks(page, firstBlog)
+      await lastBlog.getByRole('button', { name: 'Show Info' }).click()
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+      await helper.handleClicks(page, lastBlog)
+
+      const updatedBlogs = await page.locator('.blog-tile').all()
+      await expect(updatedBlogs[0].getByText('testTitle | testAuthor')).toBeVisible()
+    })
+  })
 })
