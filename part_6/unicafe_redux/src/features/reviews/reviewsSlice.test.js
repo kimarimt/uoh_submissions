@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze'
-import unicafeReducer, { incrementByType } from './unicafeSlice'
+import reviewsReducer, { incrementByType } from './reviewsSlice'
 
 const initialState = {
   good: 0,
@@ -9,13 +9,13 @@ const initialState = {
 
 describe('unicafeReducer', () => {
   test('initializes state with initialState', () => {
-    const newState = unicafeReducer(initialState, { type: 'undefined' })
+    const newState = reviewsReducer(initialState, { type: 'undefined' })
     expect(newState).toEqual(initialState)
   })
 
   test('good is incremented', () => {
     deepFreeze(initialState)
-    const newState = unicafeReducer(initialState, incrementByType('GOOD'))
+    const newState = reviewsReducer(initialState, incrementByType('GOOD'))
     expect(newState).toEqual({
       good: 1,
       ok: 0,
@@ -25,7 +25,7 @@ describe('unicafeReducer', () => {
 
   test('ok is incremented', () => {
     deepFreeze(initialState)
-    const newState = unicafeReducer(initialState, incrementByType('OK'))
+    const newState = reviewsReducer(initialState, incrementByType('OK'))
     expect(newState).toEqual({
       good: 0,
       ok: 1,
@@ -35,7 +35,7 @@ describe('unicafeReducer', () => {
 
   test('bad is incremented', () => {
     deepFreeze(initialState)
-    const newState = unicafeReducer(initialState, incrementByType('BAD'))
+    const newState = reviewsReducer(initialState, incrementByType('BAD'))
     expect(newState).toEqual({
       good: 0,
       ok: 0,
@@ -51,7 +51,7 @@ describe('unicafeReducer', () => {
     }
 
     deepFreeze(initialState)
-    const newState = unicafeReducer(testState, incrementByType('RESET'))
+    const newState = reviewsReducer(testState, incrementByType('RESET'))
     expect(newState).toEqual(initialState)
   })
 })

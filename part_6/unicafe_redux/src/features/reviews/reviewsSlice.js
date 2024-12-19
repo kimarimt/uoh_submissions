@@ -6,8 +6,8 @@ const initialState = {
   bad: 0
 }
 
-export const unicafeSlice = createSlice({
-  name: 'unicafe',
+export const reviewsSlice = createSlice({
+  name: 'reviews',
   initialState,
   reducers: {
     incrementByType: (state, action) => {
@@ -36,5 +36,5 @@ export const unicafeSlice = createSlice({
   }
 })
 
-export const { incrementByType } = unicafeSlice.actions
-export default unicafeSlice.reducer
+export const { incrementByType } = reviewsSlice.actions
+export default reviewsSlice.reducer

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import unicafeReducer from '../features/unicafe/unicafeSlice.test'
+import reviewsReducer from '../features/reviews/reviewsSlice'
 
 const store = configureStore({
   reducer: {
-    unicafe: unicafeReducer
+    reviews: reviewsReducer
   },
 })
 
