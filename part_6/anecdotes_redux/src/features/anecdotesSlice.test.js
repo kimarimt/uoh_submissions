@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze'
-import anecdotesReducer, { castVote } from './ancedotesSlice'
+import anecdotesReducer, { castVote, addAnecdote } from './ancedotesSlice'
 
 describe('anecdotesReducer', () => {
   test('initializes state with initialValue', () => {
@@ -8,7 +8,7 @@ describe('anecdotesReducer', () => {
     expect(initialState).toBe(state)
   })
 
-  test('update votes with `castVote` action', () => {
+  test('update votes with the `castVote` action', () => {
     const state = [
       {
         id: 1,
@@ -30,5 +30,20 @@ describe('anecdotesReducer', () => {
       text: 'testAnecdote 2',
       votes: 1
     })
+  })
+
+  test('adds an anecdote with the `addAnecdote` action', () => {
+    const state = []
+    deepFreeze(state)
+
+    const payload = {
+      id: 1,
+      text: 'testAnecdote 1',
+      votes: 0
+    }
+
+    const newState = anecdotesReducer(state, addAnecdote(payload))
+    expect(newState).toHaveLength(1)
+    expect(newState).toContainEqual(payload)
   })
 })
