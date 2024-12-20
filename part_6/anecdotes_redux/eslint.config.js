@@ -45,8 +45,8 @@ export default [
       'object-curly-spacing': ['error', 'always'],
       'arrow-spacing': ['error', { before: true, after: true }],
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
       'no-console': 2,
-      'react/prop-types': 2,
       'no-unused-vars': 2
     },
   },
