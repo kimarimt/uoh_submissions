@@ -1,8 +1,14 @@
+import { createSelector } from '@reduxjs/toolkit'
 import { useSelector, useDispatch } from 'react-redux'
 import { castVote, addAnecdote } from '../features/ancedotesSlice'
 
 const App = () => {
-  const anecdotes = useSelector((state) => state.anecdotes)
+  const sortedAnecdotesByVotes = createSelector(
+    state => state.anecdotes,
+    items => items.slice().sort((a, b) => b.votes - a.votes)
+  )
+
+  const anecdotes = useSelector(sortedAnecdotesByVotes)
   const dispatch = useDispatch()
 
   const generateId = () =>
