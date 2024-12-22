@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { createAnecdote, getAnecdotes } from './services/anecdotes'
+import { createAnecdote, getAnecdotes, updateAnecdote } from './services/anecdotes'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -13,10 +13,19 @@ const App = () => {
 
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: (newAnecdote) => {
+    onSuccess: newAnecdote => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient
         .setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+    }
+  })
+
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: updateAnecdote,
+    onSuccess: updatedAnecdote => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      queryClient
+        .setQueryData(['anecdotes'], anecdotes.map(anecdote => anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote))
     }
   })
 
@@ -25,6 +34,13 @@ const App = () => {
     const content = event.target.content.value
     event.target.content.value = ''
     newAnecdoteMutation.mutate({ content, votes: 0 })
+  }
+
+  const castVote = anecdote => {
+    updateAnecdoteMutation.mutate({
+      ...anecdote,
+      votes: anecdote.votes + 1
+    })
   }
 
   if (isPending) {
@@ -44,12 +60,12 @@ const App = () => {
         <button>Add</button>
       </form>
       <ul>
-        {data.map(({ id, content, votes }) => (
-          <li key={id}>
-            <p>{content}</p>
+        {data.map(anecdote => (
+          <li key={anecdote.id}>
+            <p>{anecdote.content}</p>
             <p>
-              has {votes} votes
-              <button>Vote</button>
+              has {anecdote.votes} votes
+              <button onClick={() => castVote(anecdote)}>Vote</button>
             </p>
           </li>
         ))}
