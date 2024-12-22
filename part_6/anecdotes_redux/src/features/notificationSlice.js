@@ -5,12 +5,10 @@ export const notificationSlice = createSlice({
   initialState: null,
   reducers: {
     setNotification: (state, action) => {
-      state = action.payload
-      return state
+      return action.payload
     },
-    resetNotification: (state) => {
-      state = null
-      return state
+    resetNotification: () => {
+      return null
     }
   }
 })

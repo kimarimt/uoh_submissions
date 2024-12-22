@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { createSelector } from '@reduxjs/toolkit'
 import { useSelector, useDispatch } from 'react-redux'
-import { castVote } from '../features/ancedotesSlice'
-import { setNotification, resetNotification } from '../features/notificationSlice'
 import Anecdote from './Anecdote'
+import { castVote, setAnecdotes } from '../features/ancedotesSlice'
+import { setNotification, resetNotification } from '../features/notificationSlice'
+import anecdotesService from '../services/anecdotes'
 
 const AnecdoteList = () => {
   const anecdotes = state => state.anecdotes
@@ -17,6 +19,14 @@ const AnecdoteList = () => {
   const selectorResult = useSelector(anecdoteSelector)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    anecdotesService
+      .getAllAnecdotes()
+      .then(anecdotes => {
+        dispatch(setAnecdotes(anecdotes))
+      })
+  }, [dispatch])
+
   const toggleNotification = text => {
     const message = `You voted '${text.slice(0, 20)}...'`
 
@@ -26,9 +36,16 @@ const AnecdoteList = () => {
     }, 5000)
   }
 
-  const updateVote = id => {
-    dispatch(castVote(id))
+  const updateVote = async id => {
     const anecdote = selectorResult.find(anecdote => anecdote.id === id)
+
+    const newObj = {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    }
+
+    const newAnecdote = await anecdotesService.addVote(anecdote.id, newObj)
+    dispatch(castVote(newAnecdote.id))
     toggleNotification(anecdote.text)
   }
 
