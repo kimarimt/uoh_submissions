@@ -7,7 +7,7 @@ const getAllAnecdotes = async () => {
   return response.data
 }
 
-const createAnecdote = async (text) => {
+const createAnecdote = async text => {
   const newObj = { text, votes: 0 }
   const response = await axios.post(baseUrl, newObj)
   return response.data
