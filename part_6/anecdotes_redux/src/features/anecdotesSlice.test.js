@@ -36,14 +36,13 @@ describe('anecdotesReducer', () => {
     const state = []
     deepFreeze(state)
 
-    const payload = {
-      id: 1,
-      text: 'testAnecdote 1',
-      votes: 0
-    }
-
+    const payload = 'testAnecdote 1'
     const newState = anecdotesReducer(state, addAnecdote(payload))
     expect(newState).toHaveLength(1)
-    expect(newState).toContainEqual(payload)
+    expect(newState).toContainEqual({
+      id: newState[0].id,
+      text: payload,
+      votes: 0
+    })
   })
 })
