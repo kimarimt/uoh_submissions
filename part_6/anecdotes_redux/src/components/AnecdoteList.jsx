@@ -4,12 +4,16 @@ import { castVote } from '../features/ancedotesSlice'
 import Anecdote from './Anecdote'
 
 const AnecdoteList = () => {
-  const sortedAnecdotesByVotes = createSelector(
-    state => state.anecdotes,
-    items => items.slice().sort((a, b) => b.votes - a.votes)
-  )
+  const anecdotes = state => state.anecdotes
+  const filter = state => state.filter
 
-  const anecdotes = useSelector(sortedAnecdotesByVotes)
+  const anecdoteSelector = createSelector([anecdotes, filter], (items, search) => {
+    return [...items]
+      .filter(item => item.text.includes(search))
+      .sort((a, b) => b.votes - a.votes)
+  })
+
+  const result = useSelector(anecdoteSelector)
   const dispatch = useDispatch()
 
   const updateVote = id => {
@@ -18,7 +22,7 @@ const AnecdoteList = () => {
 
   return (
     <ul>
-      {anecdotes.map(anecdote =>
+      {result.map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
