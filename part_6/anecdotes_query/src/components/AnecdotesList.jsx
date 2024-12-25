@@ -1,9 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useAnecdotesQuery, useUpdateAnecdoteMutation } from '../mutations/anecdotes'
+import { toggleNotification, useNotificationDispatch } from '../hooks/notification'
 
 const AnecdotesList = () => {
   const queryClient = useQueryClient()
-  const { isPending, isError, data } = useAnecdotesQuery()
+  const result = useAnecdotesQuery()
+  const dispatch = useNotificationDispatch()
   const updateAnecdoteMutation = useUpdateAnecdoteMutation(queryClient)
 
   const castVote = anecdote => {
@@ -11,19 +13,22 @@ const AnecdotesList = () => {
       ...anecdote,
       votes: anecdote.votes + 1
     })
+
+    const message = `anecdote '${anecdote.content.slice(0, 20)}...' voted`
+    toggleNotification(dispatch, message, 3000)
   }
 
-  if (isPending) {
+  if (result.isPending) {
     return <span>Loading...</span>
   }
 
-  if (isError) {
+  if (result.isError) {
     return <span>anecdote service not available due to problems in server</span>
   }
 
   return (
     <ul>
-      {data.map(anecdote => (
+      {result.data.map(anecdote => (
         <li key={anecdote.id}>
           <p>{anecdote.content}</p>
           <p>
