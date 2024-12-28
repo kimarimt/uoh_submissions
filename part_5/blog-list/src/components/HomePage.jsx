@@ -11,7 +11,6 @@ const HomePage = ({ name, currentUser, handleLogout, alertUser }) => {
   const [blogs, setBlogs] = useState(null)
   const blogFormRef = useRef()
 
-
   useEffect(() => {
     blogService.getAll().then((initialBlogs) => {
       setBlogs(initialBlogs)

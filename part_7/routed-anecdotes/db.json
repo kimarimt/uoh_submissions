@@ -1,0 +1,18 @@
+{
+  "anecdotes": [
+    {
+      "id": "1",
+      "content": "if it hurts, do it more often",
+      "author": "Jez Humble",
+      "url": "https://www.goodreads.com/quotes/1314241-if-it-hurts-do-it-more-frequently-and-bring-the",
+      "votes": 0
+    },
+    {
+      "id": "2",
+      "content": "Premature optimization is the root of all evil",
+      "author": "Donald Knuth",
+      "url": "https://news.ycombinator.com/item?id=24136340",
+      "votes": 0
+    }
+  ]
+}
