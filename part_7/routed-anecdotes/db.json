@@ -13,6 +13,13 @@
       "author": "Donald Knuth",
       "url": "https://news.ycombinator.com/item?id=24136340",
       "votes": 0
+    },
+    {
+      "id": "2118",
+      "content": "test anecdote",
+      "author": "test author",
+      "url": "http://www.example.com",
+      "votes": 0
     }
   ]
 }
