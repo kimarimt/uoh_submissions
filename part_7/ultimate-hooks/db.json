@@ -1,0 +1,33 @@
+{
+  "notes": [
+    {
+      "id": "1",
+      "content": "custom-hooks are awesome"
+    },
+    {
+      "id": "2",
+      "content": "best feature ever <3"
+    },
+    {
+      "id": "6817",
+      "content": "test note"
+    }
+  ],
+  "contacts": [
+    {
+      "id": "1",
+      "name": "jdoe",
+      "number": "123-456-7890"
+    },
+    {
+      "id": "2",
+      "name": "jsmith",
+      "number": "098-765-4321"
+    },
+    {
+      "id": "cf1f",
+      "name": "James Sunderland",
+      "number": "111-111-1111"
+    }
+  ]
+}
