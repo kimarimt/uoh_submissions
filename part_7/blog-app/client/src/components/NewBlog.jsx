@@ -1,61 +1,53 @@
-import { useState } from 'react'
+import { useRef } from 'react'
+import { useField } from '../hooks'
+import { useMutations } from '../hooks/blogs'
+import Toggable from './Toggable'
 
-const NewBlog = ({ addBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+const NewBlog = () => {
+  const blogFormRef = useRef()
+  const { reset: titleReset, ...title } = useField('title')
+  const { reset: authorReset, ...author } = useField('author')
+  const { reset: urlReset, ...url } = useField('url', 'url')
+  const { newBlogMutation } = useMutations()
 
-  const handleSubmit = event => {
+  const addBlog = async event => {
     event.preventDefault()
 
     const newBlog = {
-      title,
-      author,
-      url,
+      title: title.value,
+      author: author.value,
+      url: url.value,
     }
 
-    addBlog(newBlog)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    await newBlogMutation.mutateAsync(newBlog)
+    if (newBlogMutation.isError) {
+      return
+    }
+
+    titleReset()
+    authorReset()
+    urlReset()
+    blogFormRef.current.toggle()
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <Toggable buttonLabel='Add Blog' heading='Create Blog' ref={blogFormRef}>
+      <form onSubmit={addBlog}>
         <div>
           <label htmlFor='title'>Title: </label>
-          <input
-            type='text'
-            data-testid='title'
-            id='title'
-            value={title}
-            onChange={event => setTitle(event.target.value)}
-          />
+          <input data-testid='title' {...title} />
         </div>
         <div>
           <label htmlFor='author'>Author: </label>
-          <input
-            type='text'
-            data-testid='author'
-            id='author'
-            value={author}
-            onChange={event => setAuthor(event.target.value)}
-          />
+          <input data-testid='author' {...author} />
         </div>
         <div>
           <label htmlFor='url'>Url: </label>
-          <input
-            type='url'
-            data-testid='url'
-            id='url'
-            value={url}
-            onChange={event => setUrl(event.target.value)}
-          />
+          <input data-testid='url' {...url} />
         </div>
         <button type='submit'>Create</button>
       </form>
-    </div>
+    </Toggable>
   )
 }
 

@@ -1,27 +1,26 @@
+import { useBlogs } from '../hooks/blogs'
 import Blog from './Blog'
 
-const Blogs = ({ blogs, currentUser, addLike, deleteBlog }) => {
-  const blogsByLikes = blogs.toSorted((a, b) => b.likes - a.likes)
+const Blogs = ({ currentUser, addLike, deleteBlog }) => {
+  const { data: blogs, isPending, error } = useBlogs()
 
   return (
     <>
-      {blogsByLikes.length !== 0 ? (
-        <>
-          <h2>Blogs</h2>
-          <ul>
-            {blogsByLikes.map(blog => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                currentUser={currentUser}
-                onClick={() => addLike(blog.id)}
-                onDelete={() => deleteBlog(blog.id)}
-              />
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>No blogs found!</p>
+      <h2>Blogs</h2>
+      {error && <p>error fetching blogs...</p>}
+      {isPending && <p>loading blogs...</p>}
+      {blogs && (
+        <ul>
+          {blogs.map(blog => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              currentUser={currentUser}
+              onClick={() => addLike(blog.id)}
+              onDelete={() => deleteBlog(blog.id)}
+            />
+          ))}
+        </ul>
       )}
     </>
   )
