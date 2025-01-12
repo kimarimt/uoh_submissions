@@ -12,6 +12,11 @@ export const useMutations = () => {
   const queryClient = useQueryClient()
   const toggleAlert = useToggleAlert()
 
+  const handleError = (error, color = 'red') => {
+    const message = error.response.data.error
+    toggleAlert(message, color)
+  }
+
   const newBlogMutation = useMutation({
     mutationFn: blogService.createBlog,
     onSuccess: newBlog => {
@@ -22,12 +27,40 @@ export const useMutations = () => {
       )
     },
     onError: error => {
-      const message = error.response.data.error
-      toggleAlert(message, 'red')
+      handleError(error)
+    },
+  })
+
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.updateBlog,
+    onSuccess: newBlog => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(
+        ['blogs'],
+        blogs
+          .map(blog => (blog.id === newBlog.id ? newBlog : blog))
+          .toSorted((a, b) => b.likes - a.likes)
+      )
+      toggleAlert(`You liked ${newBlog.title} by ${newBlog.author}`)
+    },
+    onError: error => {
+      handleError(error)
+    },
+  })
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs'])
+    },
+    onError: error => {
+      handleError(error)
     },
   })
 
   return {
     newBlogMutation,
+    updateBlogMutation,
+    deleteBlogMutation,
   }
 }

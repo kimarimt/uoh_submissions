@@ -1,8 +1,24 @@
-import { useBlogs } from '../hooks/blogs'
+import { useBlogs, useMutations } from '../hooks/blogs'
 import Blog from './Blog'
 
-const Blogs = ({ currentUser, addLike, deleteBlog }) => {
+const Blogs = ({ currentUser }) => {
   const { data: blogs, isPending, error } = useBlogs()
+  const { updateBlogMutation, deleteBlogMutation } = useMutations()
+
+  const likeBlog = async blog => {
+    await updateBlogMutation.mutateAsync({
+      ...blog,
+      likes: blog.likes + 1,
+    })
+  }
+
+  const deleteBlog = async blog => {
+    const message = `Remove blog ${blog.title} by ${blog.author}?`
+
+    if (window.confirm(message)) {
+      await deleteBlogMutation.mutateAsync(blog)
+    }
+  }
 
   return (
     <>
@@ -16,8 +32,8 @@ const Blogs = ({ currentUser, addLike, deleteBlog }) => {
               key={blog.id}
               blog={blog}
               currentUser={currentUser}
-              onClick={() => addLike(blog.id)}
-              onDelete={() => deleteBlog(blog.id)}
+              onClick={() => likeBlog(blog)}
+              onDelete={() => deleteBlog(blog)}
             />
           ))}
         </ul>
