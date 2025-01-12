@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import Page from './Page'
+import AlertContext from './AlertContext'
 import Notification from './Notification'
 import Home from './Home'
 import Login from './Login'
@@ -8,8 +9,7 @@ import loginService from '../services/login'
 
 const App = () => {
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [color, setColor] = useState('')
+  const [alert, toggleAlert] = useContext(AlertContext)
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('appUser')
@@ -29,7 +29,7 @@ const App = () => {
       setUser(user)
     } catch (err) {
       const message = err.response.data.error
-      alertUser(message, 'red')
+      toggleAlert(message, 'red')
     }
   }
 
@@ -39,15 +39,6 @@ const App = () => {
     setUser(null)
   }
 
-  const alertUser = (message, color) => {
-    setMessage(message)
-    setColor(color)
-
-    setTimeout(() => {
-      setMessage(null)
-      setColor('')
-    }, 3000)
-  }
 
   const title = user ? 'BlogApp Home Page' : 'BlogApp Login'
   const currentUser = user
@@ -56,12 +47,11 @@ const App = () => {
 
   return (
     <Page title={title}>
-      {message && <Notification message={message} color={color} />}
+      {alert.message && <Notification message={alert.message} color={alert.color} />}
       {user && currentUser ? (
         <Home
           name={user.name}
           currentUser={currentUser}
-          alertUser={alertUser}
           handleLogout={logoutUser}
         />
       ) : (

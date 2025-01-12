@@ -3,10 +3,12 @@ import Toggable from './Toggable'
 import NewBlog from './NewBlog'
 import Blogs from './Blogs'
 import blogService from '../services/blog'
+import { useToggleAlert } from './AlertContext'
 
-const Home = ({ name, alertUser, currentUser, handleLogout }) => {
+const Home = ({ name, currentUser, handleLogout }) => {
   const [blogs, setBlogs] = useState(null)
   const blogFormRef = useRef()
+  const toggleAlert = useToggleAlert()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +17,7 @@ const Home = ({ name, alertUser, currentUser, handleLogout }) => {
         setBlogs(initialBlogs)
       } catch (err) {
         const message = err.response.data.error
-        alertUser(message, 'red')
+        toggleAlert(message, 'red')
       }
     }
 
@@ -28,11 +30,11 @@ const Home = ({ name, alertUser, currentUser, handleLogout }) => {
       const message = `New blog ${data.title} by ${data.author} has been added`
 
       setBlogs(blogs.concat(data))
-      alertUser(message, 'green')
+      toggleAlert(message, 'green')
       blogFormRef.current.toggle()
     } catch (err) {
       const message = err.response.data.error
-      alertUser(message, 'red')
+      toggleAlert(message, 'red')
     }
   }
 
@@ -52,7 +54,7 @@ const Home = ({ name, alertUser, currentUser, handleLogout }) => {
       )
     } catch (err) {
       const message = err.response.data.error
-      alertUser(message, 'red')
+      toggleAlert(message, 'red')
     }
   }
 
@@ -63,11 +65,11 @@ const Home = ({ name, alertUser, currentUser, handleLogout }) => {
     if (window.confirm(message)) {
       try {
         await blogService.deleteBlog(blog.id)
-        alertUser(`${blog.title} by ${blog.author} has been deleted`, 'green')
+        toggleAlert(`${blog.title} by ${blog.author} has been deleted`, 'green')
         setBlogs(blogs.filter(blog => blog.id !== id))
       } catch (err) {
         const message = err.response.data.error
-        alertUser(message, 'red')
+        toggleAlert(message, 'red')
       }
     }
   }

@@ -2,8 +2,8 @@
   "name": "blog-app",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
-    "test": "concurrently \"cd client && npm run dev\" \"cd server && npm run test-server\""
+    "dev-server": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
+    "test-server": "concurrently \"cd client && npm run dev\" \"cd server && npm run test-server\""
   },
   "keywords": [],
   "license": "ISC",
