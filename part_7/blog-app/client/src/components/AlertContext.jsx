@@ -39,6 +39,11 @@ export const AlertContextProvider = ({ children }) => {
   )
 }
 
+export const useAlertValue = () => {
+  const contextValues = useContext(AlertContext)
+  return contextValues[0]
+}
+
 export const useToggleAlert = () => {
   const contextValues = useContext(AlertContext)
   return contextValues[1]

@@ -39,7 +39,6 @@ export const useMutations = () => {
         ['blogs'],
         blogs
           .map(blog => (blog.id === newBlog.id ? newBlog : blog))
-          .toSorted((a, b) => b.likes - a.likes)
       )
       toggleAlert(`You liked ${newBlog.title} by ${newBlog.author}`)
     },

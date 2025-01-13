@@ -1,10 +1,28 @@
 import { useState } from 'react'
+import { useMutations } from '../hooks/blogs'
+import { useUserValue } from './UserContext'
 
-const Blog = ({ blog, currentUser, onClick, onDelete }) => {
+const Blog = ({ blog }) => {
+  const currentUser = useUserValue()
   const [toggle, setToggle] = useState(false)
-
+  const { updateBlogMutation, deleteBlogMutation } = useMutations()
   const { title, author, url, likes, user } = blog
   const label = toggle ? 'Hide' : 'Show'
+
+  const likeBlog = async blog => {
+    await updateBlogMutation.mutateAsync({
+      ...blog,
+      likes: blog.likes + 1,
+    })
+  }
+
+  const deleteBlog = async blog => {
+    const message = `Remove blog ${blog.title} by ${blog.author}?`
+
+    if (window.confirm(message)) {
+      await deleteBlogMutation.mutateAsync(blog)
+    }
+  }
 
   return (
     <li>
@@ -21,11 +39,11 @@ const Blog = ({ blog, currentUser, onClick, onDelete }) => {
             </a>
             <p>
               Likes: <span data-testid='likes'>{likes}</span>
-              <button onClick={onClick}>Like</button>
+              <button onClick={() => likeBlog(blog)}>Like</button>
             </p>
             <p>{user.name}</p>
-            {currentUser === user.name && (
-              <button onClick={onDelete}>Delete</button>
+            {currentUser.name === user.name && (
+              <button onClick={() => deleteBlog(blog)}>Delete</button>
             )}
           </div>
         )}

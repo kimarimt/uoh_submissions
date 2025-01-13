@@ -1,40 +1,19 @@
-import { useBlogs, useMutations } from '../hooks/blogs'
+import { useBlogs } from '../hooks/blogs'
 import Blog from './Blog'
 
-const Blogs = ({ currentUser }) => {
+const Blogs = () => {
   const { data: blogs, isPending, error } = useBlogs()
-  const { updateBlogMutation, deleteBlogMutation } = useMutations()
-
-  const likeBlog = async blog => {
-    await updateBlogMutation.mutateAsync({
-      ...blog,
-      likes: blog.likes + 1,
-    })
-  }
-
-  const deleteBlog = async blog => {
-    const message = `Remove blog ${blog.title} by ${blog.author}?`
-
-    if (window.confirm(message)) {
-      await deleteBlogMutation.mutateAsync(blog)
-    }
-  }
+  const blogByLikes = blogs && blogs.toSorted((a, b) => b.likes - a.likes)
 
   return (
     <>
       <h2>Blogs</h2>
-      {error && <p>error fetching blogs...</p>}
+      {error && <p>{error.response.data.error}</p>}
       {isPending && <p>loading blogs...</p>}
-      {blogs && (
+      {blogByLikes && (
         <ul>
-          {blogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              currentUser={currentUser}
-              onClick={() => likeBlog(blog)}
-              onDelete={() => deleteBlog(blog)}
-            />
+          {blogByLikes.map(blog => (
+            <Blog key={blog.id} blog={blog} />
           ))}
         </ul>
       )}

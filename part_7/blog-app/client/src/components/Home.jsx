@@ -1,16 +1,18 @@
-import { useEffect, useState, useRef } from 'react'
-import Toggable from './Toggable'
 import NewBlog from './NewBlog'
 import Blogs from './Blogs'
+import { useLogout, useUserValue } from './UserContext'
 
-const Home = ({ name, currentUser, handleLogout }) => {
+const Home = () => {
+  const user = useUserValue()
+  const logout = useLogout()
+
   return (
     <div>
       <p>
-        {name} is logged in <button onClick={handleLogout}>logout</button>
+        {user.name} is logged in <button onClick={logout}>logout</button>
       </p>
       <NewBlog />
-      <Blogs currentUser={currentUser} />
+      <Blogs />
     </div>
   )
 }

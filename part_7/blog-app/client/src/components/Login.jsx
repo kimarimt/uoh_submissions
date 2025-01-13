@@ -1,38 +1,29 @@
-import { useState } from 'react'
+import user from '../../../server/src/models/user'
+import { useField } from '../hooks'
+import { useLogin } from './UserContext'
 
-const Login = ({ loginUser }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const Login = () => {
+  const { reset: usernameReset, ...username } = useField('username')
+  const { reset: passwordReset, ...password } = useField('password', 'password')
+  const login = useLogin()
 
-  const handleLogin = event => {
+  const loginUser = event => {
     event.preventDefault()
-    loginUser({ username, password })
-    setUsername('')
-    setPassword('')
+    login({ username: username.value, password: password.value })
+    usernameReset()
+    passwordReset()
   }
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={loginUser}>
         <div>
           <label htmlFor='username'>Username: </label>
-          <input
-            type='text'
-            id='username'
-            data-testid='username'
-            value={username}
-            onChange={event => setUsername(event.target.value)}
-          />
+          <input data-testid='username' {...username} />
         </div>
         <div>
           <label htmlFor='password'>Password: </label>
-          <input
-            type='password'
-            id='password'
-            data-testid='password'
-            value={password}
-            onChange={event => setPassword(event.target.value)}
-          />
+          <input data-testid='password' {...password} />
         </div>
         <button type='submit'>Login</button>
       </form>
