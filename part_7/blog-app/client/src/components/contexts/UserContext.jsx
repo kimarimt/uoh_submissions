@@ -22,6 +22,7 @@ const UserContext = createContext()
 export const UserContextProvider = ({ children }) => {
   const [user, userDispatch] = useReducer(userReducer, initialState)
   const toggleAlert = useToggleAlert()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('appUser')
@@ -40,6 +41,7 @@ export const UserContextProvider = ({ children }) => {
       window.localStorage.clear()
       window.localStorage.setItem('appUser', JSON.stringify(userData))
       blogService.setToken(userData.setToken)
+      navigate('/')
       document.location.reload()
     } catch (err) {
       toggleAlert(err.response.data.error, 'red')
@@ -50,6 +52,7 @@ export const UserContextProvider = ({ children }) => {
     userDispatch({ type: 'LOGOUT' })
     blogService.setToken(null)
     window.localStorage.removeItem('appUser')
+    navigate('/login')
   }
 
   return (

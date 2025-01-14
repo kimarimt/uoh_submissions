@@ -1,3 +1,15 @@
+body {
+  margin: 0;
+}
+
+.page {
+  padding: 0.5rem;
+}
+
+h1 {
+  margin-top: 0;
+}
+
 ul {
   list-style: none;
   padding: 0;
@@ -17,6 +29,11 @@ ul {
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.navigation {
+  background-color: #d3d3d3;
+  padding: 1rem 0.5rem;
 }
 
 th {

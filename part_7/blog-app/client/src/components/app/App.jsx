@@ -31,7 +31,7 @@ const App = () => {
 
   return (
     <>
-      <div>
+      <div className='navigation'>
         <Link style={styles} to='/'>
           blogs
         </Link>
@@ -49,20 +49,27 @@ const App = () => {
           </Link>
         )}
       </div>
-      <h1>Blog App</h1>
-      {alert.message && (
-        <Notification message={alert.message} color={alert.color} />
-      )}
-      <Routes>
-        <Route path='/users/:id' element={<User user={appUser} />} />
-        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
-        <Route path='/' element={<Home />} />
-        <Route
-          path='/users'
-          element={user ? <Users /> : <Navigate replace to='/login' />}
-        />
-        <Route path='/login' element={<Login />} />
-      </Routes>
+      <div className='page'>
+        <h1>Blog App</h1>
+        {alert.message && (
+          <Notification message={alert.message} color={alert.color} />
+        )}
+        <Routes>
+          <Route path='/users/:id' element={<User user={appUser} />} />
+          <Route
+            path='/blogs/:id'
+            element={
+              user ? <Blog blog={blog} /> : <Navigate replace to='/login' />
+            }
+          />
+          <Route path='/' element={<Home />} />
+          <Route
+            path='/users'
+            element={user ? <Users /> : <Navigate replace to='/login' />}
+          />
+          <Route path='/login' element={<Login />} />
+        </Routes>
+      </div>
     </>
   )
 }

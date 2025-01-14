@@ -4,7 +4,7 @@ import { useUserValue } from '../contexts/UserContext'
 
 const Blog = ({ blog }) => {
   const navigate = useNavigate()
-  const currentUser = useUserValue()
+  const user = useUserValue()
   const { updateBlogMutation, deleteBlogMutation } = useMutations()
 
   const likeBlog = async blog => {
@@ -43,7 +43,7 @@ const Blog = ({ blog }) => {
             <button onClick={() => likeBlog(blog)}>Like</button>
           </p>
           <Link to={`/users/${blog.user.id}`} style={linkStyles}>{blog.user.name}</Link>
-          {currentUser.name === blog.user.name && (
+          {user.name === blog.user.name && (
             <button onClick={() => deleteBlog(blog)}>Delete</button>
           )}
         </div>

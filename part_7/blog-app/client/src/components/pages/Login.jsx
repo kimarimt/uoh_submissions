@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { useField } from '../../hooks'
-import { useLogin } from '../contexts/UserContext'
+import { useLogin, useUserValue } from '../contexts/UserContext'
 
 const Login = () => {
   const navigate = useNavigate()
+  const user = useUserValue()
   const { reset: usernameReset, ...username } = useField('username')
   const { reset: passwordReset, ...password } = useField('password', 'password')
   const login = useLogin()
@@ -13,7 +14,6 @@ const Login = () => {
     login({ username: username.value, password: password.value })
     usernameReset()
     passwordReset()
-    navigate('/')
   }
 
   return (

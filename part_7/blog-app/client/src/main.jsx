@@ -11,14 +11,14 @@ const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AlertContextProvider>
-        <UserContextProvider>
-          <Router>
+    <Router>
+      <QueryClientProvider client={queryClient}>
+        <AlertContextProvider>
+          <UserContextProvider>
             <App />
-          </Router>
-        </UserContextProvider>
-      </AlertContextProvider>
-    </QueryClientProvider>
+          </UserContextProvider>
+        </AlertContextProvider>
+      </QueryClientProvider>
+    </Router>
   </StrictMode>
 )
