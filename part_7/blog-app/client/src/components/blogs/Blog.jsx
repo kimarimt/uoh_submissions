@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useMutations } from '../hooks/blogs'
-import { useUserValue } from './UserContext'
+import { useMutations } from '../../hooks/blog'
+import { useUserValue } from '../contexts/UserContext'
 
 const Blog = ({ blog }) => {
   const currentUser = useUserValue()

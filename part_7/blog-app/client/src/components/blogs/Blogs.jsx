@@ -1,4 +1,4 @@
-import { useBlogs } from '../hooks/blogs'
+import { useBlogs } from '../../hooks/blog'
 import Blog from './Blog'
 
 const Blogs = () => {
@@ -7,8 +7,7 @@ const Blogs = () => {
 
   return (
     <>
-      <h2>Blogs</h2>
-      {error && <p>{error.response.data.error}</p>}
+      {error && <p>{error.message}</p>}
       {isPending && <p>loading blogs...</p>}
       {blogByLikes && (
         <ul>

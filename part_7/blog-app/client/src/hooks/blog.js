@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { useToggleAlert } from '../components/AlertContext'
+import { useToggleAlert } from '../components/contexts/AlertContext'
 import blogService from '../services/blog'
 
 export const useBlogs = () =>
@@ -37,8 +37,7 @@ export const useMutations = () => {
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(
         ['blogs'],
-        blogs
-          .map(blog => (blog.id === newBlog.id ? newBlog : blog))
+        blogs.map(blog => (blog.id === newBlog.id ? newBlog : blog))
       )
       toggleAlert(`You liked ${newBlog.title} by ${newBlog.author}`)
     },

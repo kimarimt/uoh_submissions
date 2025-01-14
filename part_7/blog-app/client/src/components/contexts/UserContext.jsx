@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useReducer } from 'react'
-import blogService from '../services/blog'
-import loginService from '../services/login'
+import blogService from '../../services/blog'
+import loginService from '../../services/login'
 import { useToggleAlert } from './AlertContext'
+import { useNavigate } from 'react-router-dom'
 
 const initialState = null
 
@@ -42,7 +43,7 @@ export const UserContextProvider = ({ children }) => {
       document.location.reload()
     } catch (err) {
       toggleAlert(err.response.data.error, 'red')
-    } 
+    }
   }
 
   const logout = () => {

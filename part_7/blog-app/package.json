@@ -9,5 +9,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "react-router-dom": "^7.1.1"
   }
 }

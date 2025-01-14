@@ -1,7 +1,7 @@
 import { useRef } from 'react'
-import { useField } from '../hooks'
-import { useMutations } from '../hooks/blogs'
-import Toggable from './Toggable'
+import { useField } from '../../hooks'
+import { useMutations } from '../../hooks/blog'
+import Toggable from '../helpers/Toggable'
 
 const NewBlog = () => {
   const blogFormRef = useRef()
