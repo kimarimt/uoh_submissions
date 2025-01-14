@@ -38,7 +38,7 @@ export const errorHandler = (err, req, res, next) => {
   ) {
     return res.status(400).send({ error: `username must a least 3 characters` })
   } else if (err.name === 'CastError') {
-    return res.status(400).send({ error: 'malformed id' })
+    return res.status(400).send({ error: err.message })
   } else if (
     err.name === 'MongoServerError' &&
     err.message.includes('username')

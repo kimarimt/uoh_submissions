@@ -8,6 +8,12 @@ export const useBlogs = () =>
     queryFn: blogService.getAll,
   })
 
+export const useComments = id =>
+  useQuery({
+    queryKey: ['comments'],
+    queryFn: () => blogService.getComments(id),
+  })
+
 export const useMutations = () => {
   const queryClient = useQueryClient()
   const toggleAlert = useToggleAlert()
@@ -55,9 +61,20 @@ export const useMutations = () => {
     },
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: blogService.postComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs'])
+    },
+    onError: (error) => {
+      handleError(error)
+    }
+  })
+
   return {
     newBlogMutation,
     updateBlogMutation,
     deleteBlogMutation,
+    addCommentMutation
   }
 }

@@ -11,6 +11,7 @@ import {
 import loginRouter from './controllers/login.js'
 import usersRouter from './controllers/user.js'
 import blogsRouter from './controllers/blog.js'
+import commentsRouter from './controllers/comments.js'
 import testingRouter from './controllers/testing.js'
 
 const app = express()
@@ -30,7 +31,9 @@ app.use(tokenExtractor)
 
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/comments', commentsRouter)
 app.use('/api/blogs', blogsRouter)
+
 
 if (process.env.NODE_ENV === 'test') {
   app.use('/api/testing', testingRouter)
