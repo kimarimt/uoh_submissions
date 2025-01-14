@@ -1,5 +1,5 @@
+import { Link } from 'react-router-dom'
 import { useBlogs } from '../../hooks/blog'
-import Blog from './Blog'
 
 const Blogs = () => {
   const { data: blogs, isPending, error } = useBlogs()
@@ -12,7 +12,11 @@ const Blogs = () => {
       {blogByLikes && (
         <ul>
           {blogByLikes.map(blog => (
-            <Blog key={blog.id} blog={blog} />
+            <li key={blog.id} className='blog-tile'>
+              <Link to={`/blogs/${blog.id}`}>
+                {blog.title} | {blog.author}
+              </Link>
+            </li>
           ))}
         </ul>
       )}

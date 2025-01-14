@@ -39,7 +39,6 @@ export const useMutations = () => {
         ['blogs'],
         blogs.map(blog => (blog.id === newBlog.id ? newBlog : blog))
       )
-      toggleAlert(`You liked ${newBlog.title} by ${newBlog.author}`)
     },
     onError: error => {
       handleError(error)

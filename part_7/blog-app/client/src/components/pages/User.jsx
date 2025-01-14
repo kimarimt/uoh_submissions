@@ -1,4 +1,10 @@
+import { Link } from 'react-router-dom'
+
 const User = ({ user }) => {
+  const styles = {
+    margin: '1rem 0'
+  }
+
   return (
     <>
       {user && (
@@ -7,8 +13,8 @@ const User = ({ user }) => {
           <h3>added blogs</h3>
           <ul>
             {user.blogs.map(blog => (
-              <li key={blog.id}>
-                <p>{blog.title}</p>
+              <li key={blog.id} style={styles}>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
               </li>
             ))}
           </ul>

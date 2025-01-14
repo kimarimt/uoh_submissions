@@ -7,16 +7,23 @@ import Login from '../pages/Login'
 import Users from '../pages/Users'
 import User from '../pages/User'
 import { useUsers } from '../../hooks/user'
+import { useBlogs } from '../../hooks/blog'
+import Blog from '../pages/Blog'
 
 const App = () => {
   const userMatch = useMatch('/users/:id')
+  const blogMatch = useMatch('/blogs/:id')
   const { data: users } = useUsers()
+  const { data: blogs } = useBlogs()
   const user = useUserValue()
   const logout = useLogout()
   const alert = useAlertValue()
 
   const appUser =
     userMatch && users ? users.find(u => u.id === userMatch.params.id) : null
+
+  const blog =
+    blogMatch && blogs ? blogs.find(b => b.id === blogMatch.params.id) : null
 
   const styles = {
     padding: 4,
@@ -48,6 +55,7 @@ const App = () => {
       )}
       <Routes>
         <Route path='/users/:id' element={<User user={appUser} />} />
+        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
         <Route path='/' element={<Home />} />
         <Route
           path='/users'

@@ -7,20 +7,7 @@ ul {
 .blog-tile {
   border: 4px solid lightgray;
   margin: 0.5rem 0;
-  padding: 1rem;
-}
-
-hr {
-  margin: 1rem 0;
-}
-
-.blog-tile p {
-  margin: 0.75rem 0;
-}
-
-.blog-title {
-  margin-top: 0;
-  line-height: 1.5;
+  padding: 1.5rem 1rem;
 }
 
 .message {
