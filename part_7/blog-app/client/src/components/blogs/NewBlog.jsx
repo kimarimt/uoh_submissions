@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useField } from '../../hooks'
 import { useMutations } from '../../hooks/blog'
 import Toggable from '../helpers/Toggable'
+import { Button, FormControl, Input, InputLabel } from '@mui/material'
 
 const NewBlog = () => {
   const blogFormRef = useRef()
@@ -33,19 +34,21 @@ const NewBlog = () => {
   return (
     <Toggable buttonLabel='Add Blog' heading='Create Blog' ref={blogFormRef}>
       <form onSubmit={addBlog}>
-        <div>
-          <label htmlFor='title'>Title: </label>
-          <input data-testid='title' {...title} />
-        </div>
-        <div>
-          <label htmlFor='author'>Author: </label>
-          <input data-testid='author' {...author} />
-        </div>
-        <div>
-          <label htmlFor='url'>Url: </label>
-          <input data-testid='url' {...url} />
-        </div>
-        <button type='submit'>Create</button>
+        <FormControl variant='standard' fullWidth>
+          <InputLabel htmlFor='title'>Title: </InputLabel>
+          <Input data-testid='title' {...title} />
+        </FormControl>
+        <FormControl variant='standard' fullWidth>
+          <InputLabel htmlFor='author'>Author: </InputLabel>
+          <Input data-testid='author' {...author} />
+        </FormControl>
+        <FormControl variant='standard' fullWidth>
+          <InputLabel htmlFor='url'>Url: </InputLabel>
+          <Input data-testid='url' {...url} />
+        </FormControl>
+        <Button variant='contained' type='submit' sx={{ my: 2 }}>
+          Create
+        </Button>
       </form>
     </Toggable>
   )

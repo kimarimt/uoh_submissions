@@ -1,3 +1,4 @@
+import { Box, Button, Typography } from '@mui/material'
 import { useState, forwardRef, useImperativeHandle } from 'react'
 
 const Toggable = forwardRef(({ buttonLabel, heading, children }, refs) => {
@@ -16,17 +17,16 @@ const Toggable = forwardRef(({ buttonLabel, heading, children }, refs) => {
   }
 
   return (
-    <>
-      <div style={hideWhenVisible}>
-        <button onClick={toggle}>{buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
-        <h3>{heading}</h3>
+    <Box>
+      <Box component='div' style={hideWhenVisible}>
+        <Button variant='contained' onClick={toggle}>{buttonLabel}</Button>
+      </Box>
+      <Box style={showWhenVisible}>
+        <Typography variant='h6' sx={{ mb: 2 }} >{heading}</Typography >
         {children}
-        <br />
-        <button onClick={toggle}>Cancel</button>
-      </div>
-    </>
+        <Button variant='contained' color='error' onClick={toggle}>Cancel</Button>
+      </Box>
+    </Box>
   )
 })
 

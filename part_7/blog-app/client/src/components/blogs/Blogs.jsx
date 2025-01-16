@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useBlogs } from '../../hooks/blog'
+import { List, ListItem, ListItemButton, Typography } from '@mui/material'
 
 const Blogs = () => {
   const { data: blogs, isPending, error } = useBlogs()
@@ -7,18 +8,20 @@ const Blogs = () => {
 
   return (
     <>
-      {error && <p>{error.message}</p>}
-      {isPending && <p>loading blogs...</p>}
+      {error && <Typography variant='subtitle1'>{error.message}</Typography>}
+      {isPending && <Typography variant='subtitle1'>loading blogs...</Typography>}
       {blogByLikes && blogByLikes.length > 0 ? (
-        <ul className='list'>
+        <List sx={{ py: 4 }}>
           {blogByLikes.map(blog => (
-            <li key={blog.id} className='blog-tile'>
-              <Link to={`/blogs/${blog.id}`}>
-                {blog.title} | {blog.author}
-              </Link>
-            </li>
+            <ListItem sx={{ px: 0 }} key={blog.id}>
+              <ListItemButton sx={{ px: 0 }} component={Link} to={`/blogs/${blog.id}`}>
+                <Typography variant='h6'>
+                  {blog.title} | {blog.author}
+                </Typography>
+              </ListItemButton>
+            </ListItem>
           ))}
-        </ul>
+        </List>
       ) : (
         <p>No blogs found...</p>
       )}

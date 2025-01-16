@@ -1,26 +1,34 @@
+import {
+  Box,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Typography,
+} from '@mui/material'
 import { Link } from 'react-router-dom'
 
 const User = ({ user }) => {
-  const styles = {
-    margin: '1rem 0'
-  }
-
   return (
-    <>
+    <Box sx={{ mt: 3, px: 2 }}>
       {user && (
         <>
-          <h2>{user.name}</h2>
-          <h3>added blogs</h3>
-          <ul>
-            {user.blogs.map(blog => (
-              <li key={blog.id} style={styles}>
-                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-              </li>
-            ))}
-          </ul>
+          <Typography variant='h5'>{user.name}</Typography>
+          <Typography color='info' sx={{ mt: 2 }} variant='h6'>added blogs</Typography>
+          <Table>
+            <TableBody>
+              {user.blogs.map(blog => (
+                <TableRow key={blog.id}>
+                  <TableCell component={Link} to={`/blogs/${blog.id}`}>
+                    <Typography variant='body1'>{blog.title}</Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </>
       )}
-    </>
+    </Box>
   )
 }
 

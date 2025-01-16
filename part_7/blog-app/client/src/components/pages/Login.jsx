@@ -1,3 +1,11 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Input,
+  Typography,
+} from '@mui/material'
 import { useField } from '../../hooks'
 import { useLogin } from '../contexts/UserContext'
 
@@ -14,20 +22,31 @@ const Login = () => {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={loginUser}>
-        <div>
-          <label htmlFor='username'>Username: </label>
-          <input data-testid='username' {...username} />
-        </div>
-        <div>
-          <label htmlFor='password'>Password: </label>
-          <input data-testid='password' {...password} />
-        </div>
-        <button type='submit'>Login</button>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        minHeight: '100%',
+        paddingTop: '3rem',
+      }}
+    >
+      <Typography variant='h4' component='h2'>
+        Login
+      </Typography>
+      <form className='loginForm' onSubmit={loginUser}>
+        <FormControl variant='standard' fullWidth>
+          <InputLabel htmlFor='username'>Username</InputLabel>
+          <Input data-testid='username' {...username} />
+        </FormControl>
+        <FormControl variant='standard' fullWidth>
+          <InputLabel htmlFor='password'>Password</InputLabel>
+          <Input data-testid='password' {...password} />
+        </FormControl>
+        <Button sx={{ my: 2 }} variant='contained' type='submit'>Login</Button>
       </form>
-    </div>
+    </Box>
   )
 }
 

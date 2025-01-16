@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer } from 'react'
 
 const initialState = {
   message: null,
-  color: '',
+  severity: '',
 }
 
 const alertReducer = (state, action) => {
@@ -10,7 +10,7 @@ const alertReducer = (state, action) => {
     case 'ALERT':
       return {
         message: action.message,
-        color: action.color,
+        severity: action.severity,
       }
     case 'RESET':
       return initialState
@@ -24,8 +24,8 @@ const AlertContext = createContext()
 export const AlertContextProvider = ({ children }) => {
   const [alert, alertDispatch] = useReducer(alertReducer, 0)
 
-  const toggleAlert = (message, color = 'green') => {
-    alertDispatch({ type: 'ALERT', message, color })
+  const toggleAlert = (message, severity = 'success') => {
+    alertDispatch({ type: 'ALERT', message, severity })
 
     setTimeout(() => {
       alertDispatch({ type: 'RESET' })

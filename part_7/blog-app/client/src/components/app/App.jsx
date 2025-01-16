@@ -2,6 +2,14 @@ import { useAlertValue } from '../contexts/AlertContext'
 import { useLogout, useUserValue } from '../contexts/UserContext'
 import { Link, Routes, Route, Navigate, useMatch } from 'react-router-dom'
 import Notification from '../helpers/Notification'
+import {
+  AppBar,
+  Button,
+  Box,
+  Toolbar,
+  Typography,
+  Container,
+} from '@mui/material'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import Users from '../pages/Users'
@@ -25,35 +33,45 @@ const App = () => {
   const blog =
     blogMatch && blogs ? blogs.find(b => b.id === blogMatch.params.id) : null
 
-  const styles = {
-    padding: 4,
-  }
-
   return (
     <>
-      <div className='navigation'>
-        <Link style={styles} to='/'>
-          blogs
-        </Link>
-        <Link style={styles} to='/users'>
-          users
-        </Link>
-        {user ? (
-          <span>
-            <em>{user.username} logged in</em>
-            <button onClick={logout}>logout</button>
-          </span>
-        ) : (
-          <Link style={styles} to='/login'>
-            login
-          </Link>
-        )}
-      </div>
-      <div className='page'>
-        <h1>Blog App</h1>
-        {alert.message && (
-          <Notification message={alert.message} color={alert.color} />
-        )}
+      <AppBar position='static' component='nav'>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Button color='inherit' component={Link} to='/'>
+            <Typography variant='h5'>BlogApp</Typography>
+          </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button color='inherit' component={Link} to='/'>
+              blogs
+            </Button>
+            <Button color='inherit' component={Link} to='/users'>
+              users
+            </Button>
+            {user ? (
+              <>
+                <Typography component='p' variant='body1' color='textSecondary' sx={{ mx: 1 }}>
+                  {user.username} signed in
+                </Typography>
+                <Button color='inherit' onClick={logout}>
+                  logout
+                </Button>
+              </>
+            ) : (
+              <Button color='inherit' component={Link} to='/login'>
+                login
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      {alert.message && (
+        <Notification
+          component='div'
+          message={alert.message}
+          severity={alert.severity}
+        />
+      )}
+      <Container component='div' maxWidth={false} disableGutters>
         <Routes>
           <Route path='/users/:id' element={<User user={appUser} />} />
           <Route
@@ -69,7 +87,7 @@ const App = () => {
           />
           <Route path='/login' element={<Login />} />
         </Routes>
-      </div>
+      </Container>
     </>
   )
 }

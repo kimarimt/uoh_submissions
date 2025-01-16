@@ -2,6 +2,18 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useComments, useMutations } from '../../hooks/blog'
 import { useUserValue } from '../contexts/UserContext'
 import { useField } from '../../hooks'
+import {
+  Box,
+  Typography,
+  Link as MILink,
+  Divider,
+  Button,
+  FormControl,
+  Input,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material'
 
 const Blog = ({ blog }) => {
   const navigate = useNavigate()
@@ -36,53 +48,89 @@ const Blog = ({ blog }) => {
     textReset()
   }
 
-  const linkStyles = {
-    display: 'block',
-    margin: '1rem 0',
-  }
-
   return (
-    <>
+    <Box component='div' sx={{ px: 2 }}>
       {blog && comments && (
         <div>
-          <h2>
-            {blog.title} | {blog.author}
-          </h2>
-          <a href={blog.url} target='_blank'>
+          <Typography sx={{ mt: 2 }} variant='h4'>
+            {blog.title}
+          </Typography>
+          <Typography sx={{ mb: 2 }} color='textSecondary'>
+            {blog.author}
+          </Typography>
+          <MILink
+            variant='body1'
+            underline='none'
+            href={blog.url}
+            target='_blank'
+          >
             {blog.url}
-          </a>
-          <p>
-            Likes: <span data-testid='likes'>{blog.likes}</span>
-            <button onClick={() => likeBlog(blog)}>Like</button>
-          </p>
-          <Link to={`/users/${blog.user.id}`} style={linkStyles}>
+          </MILink>
+          <Box sx={{ my: 2, display: 'flex', alignItems: 'center' }}>
+            <Typography variant='body1'>
+              Likes: <span data-testid='likes'>{blog.likes}</span>
+            </Typography>
+            <Button
+              sx={{ mx: 1 }}
+              variant='contained'
+              size='small'
+              onClick={() => likeBlog(blog)}
+            >
+              Like
+            </Button>
+          </Box>
+          <Typography
+            color='info'
+            component={Link}
+            to={`/users/${blog.user.id}`}
+          >
             {blog.user.name}
-          </Link>
-          {error && <p>{error.message}</p>}
-          {isPending && <p>Loading comments...</p>}
-
+          </Typography>
+          <Divider />
           <>
-            <h3 className='heading'>Comments</h3>
+            <Typography variant='h6' sx={{ my: 2 }}>
+              Comments
+            </Typography>
+            {error && (
+              <Typography variant='subtitle1'>{error.message}</Typography>
+            )}
+            {isPending && (
+              <Typography variant='subtitle1'>Loading comments...</Typography>
+            )}
             <form onSubmit={addComment}>
-              <input placeholder='Add comment here...' {...commentText} />
-              <button>Add comment</button>
+              <FormControl>
+                <Box>
+                  <Input placeholder='Add comment here...' {...commentText} />
+                  <Button onClick={addComment}>Send</Button>
+                </Box>
+              </FormControl>
             </form>
             {comments.length > 0 ? (
-              <ul>
+              <List sx={{ my: 1 }}>
                 {comments.map(comment => (
-                  <li key={comment.id}>{comment.text}</li>
+                  <ListItem key={comment.id}>
+                    <ListItemText>{comment.text}</ListItemText>
+                  </ListItem>
                 ))}
-              </ul>
+              </List>
             ) : (
               <p>No comments found...</p>
             )}
           </>
+          <Divider />
           {user.name === blog.user.name && (
-            <button onClick={() => deleteBlog(blog)}>Delete</button>
+            <Button
+              sx={{ mt: 2 }}
+              variant='contained'
+              color='error'
+              onClick={() => deleteBlog(blog)}
+            >
+              Delete
+            </Button>
           )}
         </div>
       )}
-    </>
+    </Box>
   )
 }
 

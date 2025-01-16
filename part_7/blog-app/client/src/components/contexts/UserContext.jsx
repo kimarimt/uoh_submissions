@@ -44,7 +44,7 @@ export const UserContextProvider = ({ children }) => {
       navigate('/')
       document.location.reload()
     } catch (err) {
-      toggleAlert(err.response.data.error, 'red')
+      toggleAlert(err.response.data.error, 'error')
     }
   }
 
