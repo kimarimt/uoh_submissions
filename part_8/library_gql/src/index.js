@@ -1,15 +1,18 @@
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
+import { authors, books } from './library_data.js'
 
 const typeDefs = `
   type Query {
-    dummy: Int
+    authorsCount: Int!
+    booksCount: Int!
   }
 `
 
 const resolvers = {
   Query: {
-    dummy: () => 0,
+    authorsCount: () => authors.length,
+    booksCount: () => books.length
   },
 }
 
