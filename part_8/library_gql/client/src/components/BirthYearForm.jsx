@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { EDIT_BIRTH_YEAR } from '../gql/mutations'
+import { ALL_AUTHORS } from '../gql/queries'
 
 const BirthYearForm = ({ setError }) => {
-  const [name, setName] = useState('')
+  const { data, loading } = useQuery(ALL_AUTHORS)
+  const [name, setName] = useState('Robert Martin')
   const [born, setBorn] = useState('')
   const [editBirthYear, result] = useMutation(EDIT_BIRTH_YEAR)
 
@@ -16,8 +18,12 @@ const BirthYearForm = ({ setError }) => {
   const submit = event => {
     event.preventDefault()
     editBirthYear({ variables: { name, setBornTo: parseInt(born) } })
-    setName('')
+    setName(data.allAuthors[0].name)
     setBorn('')
+  }
+
+  if (loading) {
+    return <div>loading authors...</div>
   }
 
   return (
@@ -26,12 +32,18 @@ const BirthYearForm = ({ setError }) => {
       <form onSubmit={submit}>
         <div>
           <label htmlFor='name'>Name </label>
-          <input
+          <select
             id='name'
-            type='text'
             value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+            onChange={({ target }) => setName(target.value)}>
+            {data.allAuthors.map(author => (
+              <option
+                key={author.id}
+                value={author.name}>
+                {author.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor='born'>Born </label>
