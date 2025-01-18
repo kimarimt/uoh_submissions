@@ -1,14 +1,15 @@
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../gql/queries'
+import BirthYearForm from './BirthYearForm'
 
-const Authors = () => {
+const Authors = ({ setError }) => {
   const { data, loading } = useQuery(ALL_AUTHORS)
 
   return (
     <>
       <h2>Authors</h2>
-      { loading && <p>loading authors...</p> }
-      { data && (
+      {loading && <p>loading authors...</p>}
+      {data && (
         <table style={{ textAlign: 'left' }}>
           <thead>
             <tr>
@@ -27,7 +28,8 @@ const Authors = () => {
             ))}
           </tbody>
         </table>
-      ) }
+      )}
+      <BirthYearForm setError={setError} />
     </>
   )
 }

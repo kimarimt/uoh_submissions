@@ -34,7 +34,7 @@ const BookForm = ({ setError }) => {
       setAuthor('')
       setPublished('')
       setGenres([])
-      navigate('/')
+      navigate('/books')
     }
   }
 

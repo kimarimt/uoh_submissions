@@ -43,7 +43,7 @@ const App = () => {
       <Routes>
         <Route
           path='/'
-          element={<Authors />}
+          element={<Authors setError={alert} />}
         />
         <Route
           path='/books'
