@@ -13,10 +13,24 @@ const BookForm = ({ setError }) => {
   const navigate = useNavigate()
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onCompleted: () => {
+      setTitle('')
+      setAuthor('')
+      setPublished('')
+      setGenres([])
+      navigate('/books')
+    },
     onError: error => {
-      const messages = error.graphQLErrors.map(e => e.message).join('/n')
-      setError(messages)
+      const message = error.message
+      setError(message)
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(response.data.addBook)
+        }
+      })
     }
   })
 
@@ -28,13 +42,13 @@ const BookForm = ({ setError }) => {
       setGenre('')
     } else {
       addBook({
-        variables: { title, author, published: parseInt(published), genres },
+        variables: {
+          title,
+          author,
+          published: published ? parseInt(published) : undefined,
+          genres,
+        },
       })
-      setTitle('')
-      setAuthor('')
-      setPublished('')
-      setGenres([])
-      navigate('/books')
     }
   }
 

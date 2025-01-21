@@ -1,23 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { EDIT_BIRTH_YEAR } from '../gql/mutations'
 import { ALL_AUTHORS } from '../gql/queries'
 
-const BirthYearForm = ({ setError }) => {
+const BirthYearForm = () => {
   const { data, loading } = useQuery(ALL_AUTHORS)
   const [name, setName] = useState('Robert Martin')
   const [born, setBorn] = useState('')
-  const [editBirthYear, result] = useMutation(EDIT_BIRTH_YEAR)
-
-  useEffect(() => {
-    if (result.data && result.data.editAuthor === null) {
-      setError('person not found')
-    }
-  }, [result.data])
+  const [editBirthYear] = useMutation(EDIT_BIRTH_YEAR)
 
   const submit = event => {
     event.preventDefault()
-    editBirthYear({ variables: { name, setBornTo: parseInt(born) } })
+    editBirthYear({
+      variables: { name, setBornTo: born ? parseInt(born) : undefined },
+    })
     setName(data.allAuthors[0].name)
     setBorn('')
   }
