@@ -113,7 +113,7 @@ const resolvers = {
       const query = Book.find({}).populate('author')
       const bookAuthor = await Author.findOne({ name: author })
 
-      if (genre) {
+      if (genre && genre !== 'all-genres') {
         query.where('genres').in([genre])
       }
 

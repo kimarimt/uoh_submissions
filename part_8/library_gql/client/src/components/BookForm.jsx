@@ -13,25 +13,14 @@ const BookForm = ({ setError }) => {
   const navigate = useNavigate()
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onCompleted: () => {
-      setTitle('')
-      setAuthor('')
-      setPublished('')
-      setGenres([])
       navigate('/books')
     },
     onError: error => {
       const message = error.message
       setError(message)
     },
-    update: (cache, response) => {
-      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        return {
-          allBooks: allBooks.concat(response.data.addBook)
-        }
-      })
-    }
   })
 
   const submit = (event, type) => {
