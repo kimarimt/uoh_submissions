@@ -5,30 +5,31 @@ import BirthYearForm from './BirthYearForm'
 const Authors = ({ setError }) => {
   const { data, loading } = useQuery(ALL_AUTHORS)
 
+  if (loading) {
+    return <p>loading data...</p>
+  }
+
   return (
     <>
       <h2>Authors</h2>
-      {loading && <p>loading authors...</p>}
-      {data && (
-        <table style={{ textAlign: 'left' }}>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Born</th>
-              <th>Books</th>
+      <table style={{ textAlign: 'left' }}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Born</th>
+            <th>Books</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.allAuthors.map(author => (
+            <tr key={author.id}>
+              <td>{author.name}</td>
+              <td>{author.born}</td>
+              <td>{author.bookCount}</td>
             </tr>
-          </thead>
-          <tbody>
-            {data.allAuthors.map(author => (
-              <tr key={author.id}>
-                <td>{author.name}</td>
-                <td>{author.born}</td>
-                <td>{author.bookCount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
       <BirthYearForm setError={setError} />
     </>
   )

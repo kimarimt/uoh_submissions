@@ -6,6 +6,7 @@ import Authors from './Authors'
 import Books from './Books'
 import BookForm from './BookForm'
 import LoginForm from './LoginForm'
+import Recommendations from './Recommendations'
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -58,6 +59,11 @@ const App = () => {
               to='/add-book'>
               add book
             </Link>
+            <Link
+              style={linkStyles}
+              to='/recommendations'>
+              recommendations
+            </Link>
             <button onClick={logout}>logout</button>
           </>
         ) : (
@@ -72,19 +78,19 @@ const App = () => {
       <Routes>
         <Route
           path='/'
-          element={
-            token ? <Authors setError={alert} /> : <Navigate to='/login' />
-          }
+          element={<Authors setError={alert} />}
         />
         <Route
           path='/books'
-          element={token ? <Books /> : <Navigate to='/login' />}
+          element={<Books />}
         />
         <Route
           path='/add-book'
-          element={
-            token ? <BookForm setError={alert} /> : <Navigate to='/login' />
-          }
+          element={<BookForm setError={alert} />}
+        />
+        <Route
+          path='/recommendations'
+          element={token ? <Recommendations /> : <Navigate to='/login' />}
         />
         <Route
           path='/login'
