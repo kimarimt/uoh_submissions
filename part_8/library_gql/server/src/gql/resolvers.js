@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
+import { PubSub } from 'graphql-subscriptions'
 import Author from '../models/author.js'
 import Book from '../models/book.js'
+import User from '../models/user.js'
+
+const pubsub = new PubSub()
 
 const addAuthor = async (root, args, context) => {
   const currentUser = context.currentUser
@@ -93,6 +97,7 @@ export const resolvers = {
         })
       }
 
+      pubsub.publish('BOOK_ADDED', { bookAdded: newBook.populate('author') })
       return newBook.populate('author')
     },
     addAuthor,
@@ -173,4 +178,9 @@ export const resolvers = {
       }) }
     },
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
+    }
+  }
 }

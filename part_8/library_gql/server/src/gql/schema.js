@@ -24,6 +24,10 @@ export const typeDefs = `
     value: String!
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Query {
     authorsCount: Int!
     booksCount: Int!

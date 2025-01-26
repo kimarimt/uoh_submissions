@@ -1,11 +1,17 @@
+import http from 'http'
+import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import jwt from 'jsonwebtoken'
 import { ApolloServer } from '@apollo/server'
-import { startStandaloneServer } from '@apollo/server/standalone'
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
+import { WebSocketServer } from 'ws'
+import { expressMiddleware } from '@apollo/server/express4'
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import { useServer } from 'graphql-ws/use/ws'
 import { typeDefs } from './gql/schema.js'
 import { resolvers } from './gql/resolvers.js'
-
 import User from './models/user.js'
 
 dotenv.config()
@@ -16,24 +22,62 @@ mongoose
   .then(() => console.log('connected to MongoDB'))
   .catch(error => console.log('error connectint to MongoDB:', error.message))
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-})
+const start = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
+  })
 
-    if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({ schema }, wsServer)
 
-      const currentUser = await User.findById(decodedToken.id)
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            },
+          }
+        },
+      },
+    ],
+  })
 
-      return { currentUser }
-    }
-  },
-}).then(({ url }) => {
-  console.log(`[server] listening at ${url}`)
-})
+  await server.start()
+
+  app.use(
+    '/',
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const auth = req ? req.headers.authorization : null
+        if (auth && auth.startsWith('Bearer ')) {
+          const decodedToken = jwt.verify(
+            auth.substring(7),
+            process.env.JWT_SECRET
+          )
+
+          const currentUser = await User.findById(decodedToken.id)
+
+          return { currentUser }
+        }
+      },
+    })
+  )
+
+  const PORT = 4000
+
+  httpServer.listen(PORT, () =>
+    console.log(`[server] listening at http://localhost:${PORT}`)
+  )
+}
+
+start()
