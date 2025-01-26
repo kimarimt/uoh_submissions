@@ -1,12 +1,30 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes } from 'react-router-dom'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useSubscription } from '@apollo/client'
 import Alert from './Alert'
 import Authors from './Authors'
 import Books from './Books'
 import BookForm from './BookForm'
 import LoginForm from './LoginForm'
 import Recommendations from './Recommendations'
+import { ALL_BOOKS, ALL_GENRES, BOOK_ADDED } from '../gql/queries'
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByTitle = a => {
+    let seen = new Set()
+
+    return a.filter(item => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByTitle(allBooks.concat(addedBook)),
+    }
+  })
+}
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -16,6 +34,17 @@ const App = () => {
   const linkStyles = {
     padding: 4,
   }
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      const query = { query: ALL_BOOKS, variables: { genre: 'all-genres' } }
+      
+      window.alert(`${addedBook.title} added`)
+      updateCache(client.cache, query, addedBook)
+      updateCache(client.cache, { query: ALL_GENRES }, addedBook)
+    },
+  })
 
   useEffect(() => {
     const loggedUser = localStorage.getItem('library-user-token')

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { ADD_BOOK } from '../gql/mutations'
 import { ALL_AUTHORS, ALL_BOOKS, ALL_GENRES } from '../gql/queries'
+import { updateCache } from './App'
 
 const BookForm = ({ setError }) => {
   const [title, setTitle] = useState('')
@@ -22,14 +23,12 @@ const BookForm = ({ setError }) => {
       setError(message)
     },
     update: (cache, response) => {
-      cache.updateQuery(
-        { query: ALL_BOOKS, variables: { genre: 'all-genres' } },
-        ({ allBooks }) => {
-          return {
-            allBooks: allBooks.concat(response.data.addBook),
-          }
-        }
-      )
+      const query = {
+        query: ALL_BOOKS,
+        variables: { genre: 'all-genres' },
+      }
+
+      updateCache(cache, query, response.data.addBook)
     },
   })
 

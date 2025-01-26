@@ -8,7 +8,6 @@ const Books = () => {
 
   const { data: genresData, loading: genresLoading } = useQuery(ALL_GENRES)
   const { data: booksData, loading: booksLoading } = useQuery(ALL_BOOKS, {
-    fetchPolicy: 'cache-and-network',
     variables: { genre },
   })
 
