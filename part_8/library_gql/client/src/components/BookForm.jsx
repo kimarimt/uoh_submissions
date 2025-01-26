@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { ADD_BOOK } from '../gql/mutations'
-import { ALL_AUTHORS, ALL_BOOKS } from '../gql/queries'
+import { ALL_AUTHORS, ALL_BOOKS, ALL_GENRES } from '../gql/queries'
 
 const BookForm = ({ setError }) => {
   const [title, setTitle] = useState('')
@@ -13,13 +13,23 @@ const BookForm = ({ setError }) => {
   const navigate = useNavigate()
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_GENRES }],
     onCompleted: () => {
       navigate('/books')
     },
     onError: error => {
       const message = error.message
       setError(message)
+    },
+    update: (cache, response) => {
+      cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre: 'all-genres' } },
+        ({ allBooks }) => {
+          return {
+            allBooks: allBooks.concat(response.data.addBook),
+          }
+        }
+      )
     },
   })
 
