@@ -6,7 +6,9 @@ const Books = () => {
   const [genre, setGenre] = useState('all-genres')
   const [genres, setGenres] = useState(null)
 
-  const { data: genresData, loading: genresLoading } = useQuery(ALL_GENRES)
+  const { data: genresData, loading: genresLoading } = useQuery(ALL_GENRES, {
+    fetchPolicy: 'cache-and-network',
+  })
   const { data: booksData, loading: booksLoading } = useQuery(ALL_BOOKS, {
     variables: { genre },
   })

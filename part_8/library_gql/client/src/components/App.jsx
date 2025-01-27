@@ -7,24 +7,9 @@ import Books from './Books'
 import BookForm from './BookForm'
 import LoginForm from './LoginForm'
 import Recommendations from './Recommendations'
-import { ALL_BOOKS, ALL_GENRES, BOOK_ADDED } from '../gql/queries'
+import { ALL_BOOKS, BOOK_ADDED } from '../gql/queries'
 
-export const updateCache = (cache, query, addedBook) => {
-  const uniqByTitle = a => {
-    let seen = new Set()
 
-    return a.filter(item => {
-      let k = item.title
-      return seen.has(k) ? false : seen.add(k)
-    })
-  }
-
-  cache.updateQuery(query, ({ allBooks }) => {
-    return {
-      allBooks: uniqByTitle(allBooks.concat(addedBook)),
-    }
-  })
-}
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -41,8 +26,11 @@ const App = () => {
       const query = { query: ALL_BOOKS, variables: { genre: 'all-genres' } }
       
       window.alert(`${addedBook.title} added`)
-      updateCache(client.cache, query, addedBook)
-      updateCache(client.cache, { query: ALL_GENRES }, addedBook)
+      client.cache.updateQuery(query, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook),
+        }
+      })
     },
   })
 

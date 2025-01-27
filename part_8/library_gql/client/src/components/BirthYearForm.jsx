@@ -1,13 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { EDIT_BIRTH_YEAR } from '../gql/mutations'
 import { ALL_AUTHORS } from '../gql/queries'
 
 const BirthYearForm = () => {
   const { data, loading } = useQuery(ALL_AUTHORS)
-  const [name, setName] = useState('Robert Martin')
+  const [name, setName] = useState('')
   const [born, setBorn] = useState('')
   const [editBirthYear] = useMutation(EDIT_BIRTH_YEAR)
+
+  useEffect(() => {
+    if (data && data.allAuthors.length > 0) {
+      const first = data.allAuthors[0].name
+      setName(first ? first : '')
+    }
+  }, [data])
 
   const submit = event => {
     event.preventDefault()

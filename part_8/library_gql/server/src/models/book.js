@@ -17,4 +17,5 @@ const schema = new mongoose.Schema({
   genres: [{ type: String }],
 })
 
+
 export default new mongoose.model('Book', schema)

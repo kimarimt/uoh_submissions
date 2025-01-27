@@ -67,7 +67,9 @@ const start = async () => {
 
           const currentUser = await User.findById(decodedToken.id)
 
-          return { currentUser }
+          return { 
+            currentUser
+          }
         }
       },
     })

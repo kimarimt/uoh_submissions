@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import DataLoader from 'dataloader'
 import { GraphQLError } from 'graphql'
 import { PubSub } from 'graphql-subscriptions'
 import Author from '../models/author.js'
@@ -6,6 +7,16 @@ import Book from '../models/book.js'
 import User from '../models/user.js'
 
 const pubsub = new PubSub()
+
+const getAuthorIds = async () => {
+  const authorIds = await Author.find()
+  return authorIds
+}
+
+const getAuthorById = async (id) => {
+  const author = await Author.findById(id)
+  return author
+}
 
 const addAuthor = async (root, args, context) => {
   const currentUser = context.currentUser
@@ -35,6 +46,8 @@ const addAuthor = async (root, args, context) => {
   return newAuthor
 }
 
+const authorLoader = new DataLoader(getAuthorIds)
+
 export const resolvers = {
   Query: {
     authorsCount: async () => Author.collection.countDocuments(),
@@ -55,11 +68,16 @@ export const resolvers = {
       const books = query.exec()
       return books
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      return Author.find({})
+    },
     me: async (root, args, context) => context.currentUser,
   },
   Author: {
-    bookCount: async root => Book.countDocuments({ author: root.id }),
+    bookCount: async root => {
+      const { books } = await authorLoader.load(getAuthorById(root._id))
+      return books.length
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -78,15 +96,19 @@ export const resolvers = {
 
       if (!existingAuthor) {
         author = await addAuthor(null, { name: args.author }, context)
+      } else {
+        author = existingAuthor
       }
 
       const newBook = new Book({
         ...args,
-        author: author ? author._id : existingAuthor._id,
+        author: author._id
       })
 
       try {
         await newBook.save()
+        author.books.push(newBook._id)
+        await author.save()
       } catch (error) {
         throw new GraphQLError('saving book failed', {
           extensions: {
@@ -111,7 +133,7 @@ export const resolvers = {
           },
         })
       }
-      
+
       const author = await Author.findOne({ name: args.name })
 
       if (!author) {
@@ -173,14 +195,16 @@ export const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60
-      }) }
+      return {
+        value: jwt.sign(userForToken, process.env.JWT_SECRET, {
+          expiresIn: 60 * 60,
+        }),
+      }
     },
   },
   Subscription: {
     bookAdded: {
-      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
-    }
-  }
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED'),
+    },
+  },
 }
