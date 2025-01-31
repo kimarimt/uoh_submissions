@@ -1,15 +1,7 @@
-enum Rating {
-  Bad = 1,
-  Average,
-  Excellent,
-}
+import { type CalculatorValues, ProcessType, processArgs } from './helpers/util'
+import { getRating, Rating } from './helpers/exercise'
 
-interface RatingDescription {
-  rating: Rating
-  description: string
-}
-
-interface Result {
+interface ExerciseResult {
   periodLength: number
   trainingDays: number
   success: boolean
@@ -19,28 +11,9 @@ interface Result {
   average: number
 }
 
-const ratingDescriptions: RatingDescription[] = [
-  {
-    rating: Rating.Bad,
-    description: "Not the best week but you're making progress",
-  },
-  {rating: Rating.Average, description: 'An okay week, keep pushing'},
-  {rating: Rating.Excellent, description: 'Really good week, keep it up'},
-]
-
-const getRating = (period: number, daysTrained: number): RatingDescription => {
-  const trainingRatio = daysTrained / period
-
-  if (trainingRatio > 0.8) {
-    return ratingDescriptions[2]
-  } else if (trainingRatio > 0.5) {
-    return ratingDescriptions[1]
-  } else {
-    return ratingDescriptions[0]
-  }
-}
-
-const calculateExercises = (hours: number[], target: number): Result => {
+const calculateExercises = (values: CalculatorValues): ExerciseResult => {
+  const target = values.target as number
+  const hours = values.hours as number[]
   const periodLength = hours.length
   const trainingDays = hours.filter(hours => hours !== 0).length
   const average = hours.reduce((acc, curr) => acc + curr) / hours.length
@@ -58,6 +31,10 @@ const calculateExercises = (hours: number[], target: number): Result => {
   }
 }
 
-const hours = [3, 2, 2, 4.5, 2, 3, 1]
-const target = 2
-console.log(calculateExercises(hours, target))
+try {
+  const values = processArgs(process.argv.slice(2), ProcessType.Exercises)
+  const result = calculateExercises(values)
+  console.log(result)
+} catch (error) {
+  console.log('Exercise Calculator error', error.message)
+}

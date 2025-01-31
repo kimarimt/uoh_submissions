@@ -1,10 +1,15 @@
+import { type CalculatorValues, ProcessType, processArgs } from './helpers/util'
+
 enum BodyMassIndex {
   Underweight = 'Underweight',
   Normal = 'Normal range',
   Overweight = 'Overweight',
 }
 
-const calculateBMI = (weight: number, height: number): BodyMassIndex => {
+const calculateBMI = (values: CalculatorValues): BodyMassIndex => {
+  const weight = values.weight as number
+  const height = values.height as number
+
   const bmi = (weight / Math.pow(height, 2)) * 10_000
 
   if (bmi < 18.5) {
@@ -16,4 +21,10 @@ const calculateBMI = (weight: number, height: number): BodyMassIndex => {
   }
 }
 
-console.log(calculateBMI(79, 162))
+try {
+  const values = processArgs(process.argv.slice(2), ProcessType.BMI)
+  const result = calculateBMI(values)
+  console.log(result)
+} catch (error) {
+  console.log('BMICalculator error:', error.message)
+}
