@@ -2,7 +2,8 @@
   "name": "ts-exercises",
   "version": "1.0.0",
   "scripts": {
-    "calculateBmi": "ts-node src/bmiCalculator.ts"
+    "calculateBmi": "ts-node src/bmiCalculator.ts",
+    "calculateExercises": "ts-node src/exerciseCalculator"
   },
   "keywords": [],
   "author": "",
