@@ -2,6 +2,7 @@
   "name": "ts-exercises",
   "version": "1.0.0",
   "scripts": {
+    "start": "ts-node-dev src/index.ts",
     "calculateBmi": "ts-node src/bmiCalculator.ts",
     "calculateExercises": "ts-node src/exerciseCalculator"
   },
@@ -10,6 +11,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "@types/express": "^5.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
