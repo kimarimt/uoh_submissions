@@ -1,4 +1,4 @@
-import { type CalculatorValues } from './util'
+import { type CalculatorValues } from './util';
 
 enum BodyMassIndex {
   Underweight = 'Underweight',
@@ -7,16 +7,16 @@ enum BodyMassIndex {
 }
 
 export const calculateBMI = (values: CalculatorValues): BodyMassIndex => {
-  const weight = values.weight as number
-  const height = values.height as number
+  const weight = values.weight as number;
+  const height = values.height as number;
 
-  const bmi = (weight / Math.pow(height, 2)) * 10_000
+  const bmi = (weight / Math.pow(height, 2)) * 10_000;
 
   if (bmi < 18.5) {
-    return BodyMassIndex.Underweight
+    return BodyMassIndex.Underweight;
   } else if (bmi < 24.9) {
-    return BodyMassIndex.Normal
+    return BodyMassIndex.Normal;
   } else {
-    return BodyMassIndex.Overweight
+    return BodyMassIndex.Overweight;
   }
-}
+};

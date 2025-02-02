@@ -1,4 +1,4 @@
-import { type CalculatorValues } from './util'
+import { type CalculatorValues } from './util';
 
 export enum Rating {
   Bad = 1,
@@ -28,33 +28,33 @@ const RATING_DESCRIPTIONS: RatingDescription[] = [
   },
   { rating: Rating.Average, description: 'An okay week, keep pushing' },
   { rating: Rating.Excellent, description: 'Really good week, keep it up' },
-]
+];
 
 export const getRating = (
   period: number,
   daysTrained: number
 ): RatingDescription => {
-  const trainingRatio = daysTrained / period
+  const trainingRatio = daysTrained / period;
 
   if (trainingRatio > 0.8) {
-    return RATING_DESCRIPTIONS[2]
+    return RATING_DESCRIPTIONS[2];
   } else if (trainingRatio > 0.5) {
-    return RATING_DESCRIPTIONS[1]
+    return RATING_DESCRIPTIONS[1];
   } else {
-    return RATING_DESCRIPTIONS[0]
+    return RATING_DESCRIPTIONS[0];
   }
-}
+};
 
 export const calculateExercises = (
   values: CalculatorValues
 ): ExerciseResult => {
-  const target = values.target as number
-  const hours = values.hours as number[]
-  const periodLength = hours.length
-  const trainingDays = hours.filter(hours => hours !== 0).length
-  const average = hours.reduce((acc, curr) => acc + curr) / hours.length
-  const success = average >= target
-  const { rating, description } = getRating(periodLength, trainingDays)
+  const target = values.target as number;
+  const hours = values.hours as number[];
+  const periodLength = hours.length;
+  const trainingDays = hours.filter(hours => hours !== 0).length;
+  const average = hours.reduce((acc, curr) => acc + curr) / hours.length;
+  const success = average >= target;
+  const { rating, description } = getRating(periodLength, trainingDays);
 
   return {
     periodLength,
@@ -64,5 +64,5 @@ export const calculateExercises = (
     success,
     rating,
     ratingDescription: description,
-  }
-}
+  };
+};
