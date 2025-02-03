@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "rootDir": "./src",
     "outDir": "./dist",
     "module": "CommonJS",
     "strict": true,
@@ -10,5 +9,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
-  }
+  },
 }
