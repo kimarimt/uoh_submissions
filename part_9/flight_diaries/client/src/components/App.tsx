@@ -1,7 +1,8 @@
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { NewEntry, NonSensitiveEntry } from '../types';
 import { createEntry, getAllEntries } from '../service/diaryService';
-import { getVisibility, getWeather } from '../util/helpers';
+import { AxiosError } from 'axios';
+import { CustomError, parseErrors } from '../util/helpers';
 
 const App = () => {
   const [diaries, setDiaries] = useState<NonSensitiveEntry[]>([]);
@@ -9,11 +10,20 @@ const App = () => {
   const [visibility, setVisibility] = useState('');
   const [weather, setWeather] = useState('');
   const [comment, setComment] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDiaries = async () => {
-      const entriesData = await getAllEntries();
-      setDiaries(entriesData);
+      try {
+        const entriesData = await getAllEntries();
+        if (entriesData) {
+          setDiaries(entriesData);
+        }
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          alertError(error.message);
+        }
+      }
     };
 
     fetchDiaries();
@@ -22,20 +32,43 @@ const App = () => {
   const addEntry = async (event: SyntheticEvent) => {
     event.preventDefault();
 
-    const entry: NewEntry = {
-      date,
-      visibility: getVisibility(visibility),
-      weather: getWeather(weather),
-      comment
-    };
+    try {
+      const entry: NewEntry = {
+        date,
+        visibility: visibility.toLowerCase(),
+        weather: weather.toLowerCase(),
+        comment
+      };
 
-    const newEntry = await createEntry(entry);
+      const newEntry = await createEntry(entry);
+      const nonSensitiveEntry = {...newEntry, comment: null} as NonSensitiveEntry;
+      
+      setDiaries(diaries.concat(nonSensitiveEntry));
+      setDate('');
+      setVisibility('');
+      setWeather('');
+      setComment('');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const errors = error.response?.data.error as CustomError[];
+        const parsedErrors = parseErrors(errors);
+        const errorMessage = parsedErrors
+          .map(
+            error => `Error: ${error.message}${error.path ? `, path: ${error.path}` : ''}`
+          )
+          .join('\n');
 
-    setDiaries(diaries.concat(newEntry));
-    setDate('');
-    setVisibility('');
-    setWeather('');
-    setComment('');
+        alertError(errorMessage);
+      }
+    }
+  };
+
+  const alertError = (message: string) => {
+    setMessage(message);
+
+    setTimeout(() => {
+      setMessage(null);
+    }, 3000);
   };
 
   return (
@@ -43,6 +76,7 @@ const App = () => {
       <div>
         <h2>Add new entry</h2>
         <form onSubmit={addEntry}>
+          { message && <p style={{ color: 'red', whiteSpace: 'pre-wrap' }}>{message}</p> }
           <div>
             <label htmlFor='date'>Date: </label>
             <input id='date' type='text' value={date} onChange={event => setDate(event.target.value)} />

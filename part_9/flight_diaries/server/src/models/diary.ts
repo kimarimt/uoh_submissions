@@ -9,7 +9,7 @@ export const NewEntrySchema = z.object({
 });
 
 export interface DiaryEntry {
-  id: number;
+  id: string;
   date: string;
   weather: Weather;
   visibility: Visibility;
@@ -19,5 +19,5 @@ export interface DiaryEntry {
 export type NewDiaryEntry = z.infer<typeof NewEntrySchema>;
 
 export interface DiaryEntry extends NewDiaryEntry {
-  id: number;
+  id: string;
 }

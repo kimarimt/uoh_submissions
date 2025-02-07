@@ -1,3 +1,4 @@
+import { v1 as uuid } from 'uuid';
 import diaries from '../../data/diaries';
 import { DiaryEntry, NewDiaryEntry } from '../models/diary';
 import { NonSensitiveEntries } from '../types';
@@ -17,7 +18,7 @@ const getNonSensitiveEntries = (): NonSensitiveEntries[] => {
 
 const addDiary = (entry: NewDiaryEntry): DiaryEntry => {
   const newEntry = {
-    id: Math.max(...diaries.map(d => d.id )) + 1,
+    id: uuid(),
     ...entry
   };
 
@@ -26,7 +27,7 @@ const addDiary = (entry: NewDiaryEntry): DiaryEntry => {
   return newEntry;
 };
 
-const findById = (id: number): DiaryEntry | undefined => {
+const findById = (id: string): DiaryEntry | undefined => {
   const diary = diaries.find(d => d.id === id);
   return diary;
 };

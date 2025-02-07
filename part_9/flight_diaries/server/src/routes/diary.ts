@@ -11,7 +11,7 @@ router.get('/', (_req: Request, res: Response<NonSensitiveEntries[]>) => {
 });
 
 router.get('/:id', (req: Request, res: Response) => {
-  const diary = diaryService.findById(Number(req.params.id));
+  const diary = diaryService.findById(req.params.id);
 
   if (!diary) {
     res.status(404).send({ 'error': 'diary not found' });

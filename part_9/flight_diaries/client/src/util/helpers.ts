@@ -1,33 +1,32 @@
-import { Visibility, Weather } from '../types';
+interface ErrorBase {
+  code: string;
+  message: string;
+  path: string[];
+}
 
-export const getVisibility = (type: string): Visibility => {
-  switch (type) {
-  case 'great':
-    return Visibility.Great;
-  case 'good':
-    return Visibility.Good;
-  case 'ok':
-    return Visibility.Ok;
-  case 'poor':
-    return Visibility.Poor;
-  default:
-    throw new Error('invalid visibility type');
-  }
-};
+interface EnumError extends ErrorBase {
+  options: string[];
+  received: string;
+}
 
-export const getWeather = (type: string): Weather => {
-  switch (type) {
-  case 'sunny':
-    return Weather.Sunny;
-  case 'rainy':
-    return Weather.Rainy;
-  case 'cloudy':
-    return Weather.Cloudy;
-  case 'stormy':
-    return Weather.Stormy;
-  case 'windy':
-    return Weather.Windy;
-  default:
-    throw new Error('invalid weather type');
-  }
+interface ValidationError extends ErrorBase {
+  validation: string;
+}
+
+export type CustomError = EnumError | ValidationError;
+
+export interface ParsedError {
+  message: string;
+  path?: string;
+}
+
+export const parseErrors = (errors: CustomError[]): ParsedError[] => {
+  return errors.map(error => {
+    if (error.message.includes('enum')) {
+      const message = error.message.split('.')[0];
+      return { message, path: error.path[0] };
+    } else {
+      return { message: error.message };
+    }
+  });
 };
