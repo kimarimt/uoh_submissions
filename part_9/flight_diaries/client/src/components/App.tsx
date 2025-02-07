@@ -5,10 +5,13 @@ import { AxiosError } from 'axios';
 import { CustomError, parseErrors } from '../util/helpers';
 
 const App = () => {
+  const visibilityValues: string[] = ['great', 'good', 'ok', 'poor'];
+  const weatherValues: string[] = ['sunny', 'rainy', 'cloudy', 'stormy', 'windy'];
+  
   const [diaries, setDiaries] = useState<NonSensitiveEntry[]>([]);
   const [date, setDate] = useState('');
-  const [visibility, setVisibility] = useState('');
-  const [weather, setWeather] = useState('');
+  const [visibility, setVisibility] = useState(visibilityValues[0]);
+  const [weather, setWeather] = useState(weatherValues[0]);
   const [comment, setComment] = useState('');
   const [message, setMessage] = useState<string | null>(null);
 
@@ -75,26 +78,42 @@ const App = () => {
     <>
       <div>
         <h2>Add new entry</h2>
-        <form onSubmit={addEntry}>
-          { message && <p style={{ color: 'red', whiteSpace: 'pre-wrap' }}>{message}</p> }
-          <div>
-            <label htmlFor='date'>Date: </label>
-            <input id='date' type='text' value={date} onChange={event => setDate(event.target.value)} />
-          </div>
-          <div>
-            <label htmlFor='visibility'>Visibility: </label>
-            <input id='visibility' type='text' value={visibility} onChange={event => setVisibility(event.target.value)} />
-          </div>
-          <div>
-            <label htmlFor='weather'>Weather: </label>
-            <input id='weather' type='text' value={weather} onChange={event => setWeather(event.target.value)} />
-          </div>
-          <div>
-            <label htmlFor='comment'>Comment: </label>
-            <input id='comment' type='text' value={comment} onChange={event => setComment(event.target.value)} />
-          </div>
-          <button type='submit'>Add</button>
-        </form>
+        { visibilityValues && (
+          <form onSubmit={addEntry}>
+            { message && <p style={{ color: 'red', whiteSpace: 'pre-wrap' }}>{message}</p> }
+            <div>
+              <label htmlFor='date'>Date: </label>
+              <input id='date' type='date' value={date} onChange={event => setDate(event.target.value)} />
+            </div>
+            <div>
+              <label>Visibility: </label>
+              {
+                visibilityValues.map(val => (
+                  <span key={val}>
+                    <input type='radio' name='visibility' id={val} value={val} onChange={event => setVisibility(event.target.value)} checked={visibility === val} />
+                    <label htmlFor={val}>{val}</label>
+                  </span>
+                ))
+              }
+            </div>
+            <div>
+              <label>Weather: </label>
+              {
+                weatherValues.map(val => (
+                  <span key={val}>
+                    <input type='radio' name='weather' id={val} value={val} onChange={event => setWeather(event.target.value)} checked={weather === val} />
+                    <label htmlFor={val}>{val}</label>
+                  </span>
+                ))
+              }
+            </div>
+            <div>
+              <label htmlFor='comment'>Comment: </label>
+              <input id='comment' type='text' value={comment} onChange={event => setComment(event.target.value)} />
+            </div>
+            <button type='submit'>Add</button>
+          </form>
+        )}
       </div>
       <div>
         <h2>Diary Entries</h2>
