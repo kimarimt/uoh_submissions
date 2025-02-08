@@ -6,6 +6,16 @@ const getPatients = (): Patient[] => {
   return patients;
 };
 
+const getPatient = (id: string): SecurePatientData => {
+  const patient = patients.find(p => p.id === id);
+
+  if (patient) {
+    return {...patient, ssn: undefined, entries: undefined} as SecurePatientData;
+  }
+
+  throw new Error('patient not found');
+};
+
 const getSecurePatientData = (): SecurePatientData[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
@@ -19,6 +29,7 @@ const getSecurePatientData = (): SecurePatientData[] => {
 const addPatient = (newPatient: NewPatient): Patient => {
   const patient: Patient = {
     id: uuid(),
+    entries: [],
     ...newPatient
   };
 
@@ -28,6 +39,7 @@ const addPatient = (newPatient: NewPatient): Patient => {
 
 export default {
   getPatients,
+  getPatient,
   getSecurePatientData,
   addPatient,
 };

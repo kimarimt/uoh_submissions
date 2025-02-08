@@ -11,8 +11,11 @@ export const NewPatientSchema = z.object({
   dateOfBirth: z.string().date(),
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
-  occupation: z.string()
+  occupation: z.string(),
 });
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Entry {}
 
 export interface Patient {
   id: string,
@@ -20,10 +23,11 @@ export interface Patient {
   dateOfBirth: string,
   ssn: string,
   gender: Gender,
-  occupation: string
+  occupation: string,
+  entries: Entry[]
 }
 
-export type SecurePatientData = Omit<Patient, 'ssn'>;
+export type SecurePatientData = Omit<Patient, 'ssn' | 'entries'>;
 export type NewPatient = z.infer<typeof NewPatientSchema>;
 
 export interface Patient extends NewPatient {
