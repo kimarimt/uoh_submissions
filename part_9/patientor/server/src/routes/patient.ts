@@ -6,7 +6,7 @@ import patientService from '../services/patient';
 const patientRouter = express.Router();
 
 patientRouter.get('/', (_req: Request, res: Response<SecurePatientData[]>) => {
-  res.json(patientService.getSecurePatientData());
+  res.json(patientService.getPatients());
 });
 
 patientRouter.get('/:id', (req: Request, res: Response) => {

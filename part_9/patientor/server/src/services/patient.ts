@@ -1,16 +1,16 @@
 import { v1 as uuid } from 'uuid';
 import patients from '../../data/patients';
-import { Patient, SecurePatientData, NewPatient } from '../models/patient';
+import { Patient, SecurePatientData, NewPatient, SecurePatienWithEntries } from '../models/patient';
 
 const getPatients = (): Patient[] => {
   return patients;
 };
 
-const getPatient = (id: string): SecurePatientData => {
+const getPatient = (id: string): SecurePatienWithEntries => {
   const patient = patients.find(p => p.id === id);
 
   if (patient) {
-    return {...patient, ssn: undefined, entries: undefined} as SecurePatientData;
+    return {...patient, ssn: undefined} as SecurePatienWithEntries;
   }
 
   throw new Error('patient not found');
