@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Patient } from "../../types";
 import patientsService from "../../services/patients";
 import { useMatch } from "react-router-dom";
-import { Card, CardContent, CardHeader, Divider, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 
 const PatientPage = () => {
   const match = useMatch('/patients/:id');
@@ -30,9 +30,41 @@ const PatientPage = () => {
       <CardHeader title={patient?.name} subheader={patient?.gender} />
       <Divider />
       <CardContent>
-        <Typography>
+        <Typography variant='overline'>
           Occupation: {patient?.occupation}
         </Typography>
+        { patient?.entries && patient?.entries.length > 0 ? (
+          <>
+            <Typography variant='h6' sx={{ margin: '.75rem 0' }}>
+              Entries
+            </Typography>
+            {patient?.entries.map(entry => (
+              <Box key={entry.id}>
+                <Typography variant='body2'>
+                  {entry.date} {entry.description}
+                </Typography>
+                { entry.diagnosisCodes && (
+                  <>
+                    <Typography sx={{ marginTop: '1rem' }}>
+                      Diagnoses
+                    </Typography>
+                    <List sx={{ padding: 0 }}>
+                      {entry.diagnosisCodes.map(code => (
+                        <ListItem key={code} sx={{ padding: 0, margin: 0 }}>
+                          <ListItemText>
+                            <Typography variant='overline'>
+                              {code}
+                            </Typography>
+                          </ListItemText>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </>
+                )}
+              </Box>
+            ))}
+          </>
+        ) : <Typography style={{ marginTop: '0.75rem' }}>No Entries Found...</Typography>}
       </CardContent>
     </Card>
   );

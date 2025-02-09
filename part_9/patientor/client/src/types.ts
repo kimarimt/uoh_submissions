@@ -10,7 +10,13 @@ export enum Gender {
   Other = "other"
 }
 
-export interface Entry{}
+export interface Entry {
+  id: string;
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnosis['code']>;
+}
 
 export interface Patient {
   id: string;
