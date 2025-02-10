@@ -1,6 +1,6 @@
-import { LocalHospital, Favorite } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Favorite } from "@mui/icons-material";
 import { HealthCheckEntry, HealthCheckRating } from "../../../types";
+import Wrapper from "./Wrapper";
 
 interface Props {
   entry: HealthCheckEntry;
@@ -21,23 +21,9 @@ const HealthCheck = ({ entry }: Props) => {
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex' }}>
-        <Typography sx={{ marginBottom: '0.25rem', marginRight: '0.25rem', fontWeight: 'bold' }}>
-        {entry.date} 
-        </Typography>
-        <LocalHospital />
-      </Box>
-      <Typography>
-      </Typography>
-      <Typography component='p' variant='body1'>
-        {entry.description}
-      </Typography>
-      <Favorite sx={{ color: color(), marginBottom: '0.25rem' }} />
-      <Typography component='p' variant='caption'>
-        Diagnosed by {entry.specialist}
-      </Typography>
-    </Box>
+    <Wrapper entry={entry}>
+      <Favorite sx={{ color: color() }} />
+    </Wrapper>
   );
 };
   

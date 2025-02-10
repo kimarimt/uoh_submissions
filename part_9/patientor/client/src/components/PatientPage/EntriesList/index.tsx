@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import { Patient } from "../../../types";
 import EntryDetails from "./EntryDetails";
 
@@ -19,9 +19,12 @@ const EntriesList = ({ patient }: Props) => {
               <Typography variant='h6' sx={{ margin: '.25rem 0' }}>
                 Entries
               </Typography>
-              {patient.entries.map(entry => 
-                <EntryDetails key={entry.id} entry={entry} />
-              )}
+              {patient.entries.map((entry, i) => (
+                <div key={entry.id}>
+                  <EntryDetails entry={entry} />
+                  { i < patient.entries.length - 1 && <Divider /> }
+                </div>
+              ))}
             </>
           ) 
         : <Typography style={{ marginTop: '0.75rem' }}>No Entries Found...</Typography>
