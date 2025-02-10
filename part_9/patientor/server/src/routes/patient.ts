@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { errorHandler, newPatientHander } from '../util/middleware';
 import { NewPatient, SecurePatientData } from '../models/patient';
+import { EntryUnion, NewEntry } from '../util/entry';
 import patientService from '../services/patient';
 
 const patientRouter = express.Router();
@@ -24,6 +25,18 @@ patientRouter.post('/', newPatientHander, (req: Request<unknown, unknown, NewPat
   const addedPatient = patientService.addPatient(req.body);
   const securePatientData = {...addedPatient, ssn: undefined} as SecurePatientData;
   res.status(201).json(securePatientData);
+});
+
+patientRouter.post('/:id/entries', (req: Request, res: Response) => {
+  try {
+    const newEntry: NewEntry = EntryUnion.parse(req.body);
+    const addedEntry = patientService.addEntry(req.params.id, newEntry);
+    res.status(201).json(addedEntry);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).send({ 'error': error.message });
+    }
+  }
 });
 
 patientRouter.use(errorHandler);
