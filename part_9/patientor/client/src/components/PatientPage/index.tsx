@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
-import { Patient } from "../../types";
+import { Gender, Patient } from "../../types";
 import patientsService from "../../services/patients";
 import { useMatch } from "react-router-dom";
 import { Card, CardContent, CardHeader, Divider, Typography } from "@mui/material";
 import EntriesList from "./EntriesList";
+import { Female, Male, Person } from "@mui/icons-material";
 
 const PatientPage = () => {
   const match = useMatch('/patients/:id');
   const [patient, setPatient] = useState<Patient | null>(null);
+
+  const genderIcon = () => {
+    switch (patient?.gender) {
+    case Gender.Female:
+      return <Female />;
+    case Gender.Male:
+      return <Male />;
+    case Gender.Other:
+      return <Person />;
+    }
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -28,7 +40,7 @@ const PatientPage = () => {
   
   return (
     <Card style={{ marginTop: '1.5rem' }}>
-      <CardHeader title={patient?.name} subheader={patient?.gender} />
+      <CardHeader title={patient?.name} subheader={genderIcon()} />
       <Divider />
       <CardContent>
         <Typography variant='overline'>

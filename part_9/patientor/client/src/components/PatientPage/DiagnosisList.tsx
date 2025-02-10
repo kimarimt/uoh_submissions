@@ -1,26 +1,22 @@
 import { useEffect, useState } from "react";
 import { List, ListItem, ListItemText, Typography } from "@mui/material";
-import { Diagnosis, Patient } from "../../types";
+import { Diagnosis } from "../../types";
 import diagnosesService from "../../services/diagnoses";
 
 interface Props {
-  patient: Patient
+  codes: Array<Diagnosis['code']> | undefined;
 }
 
-const DiagnosisList = ({ patient }: Props) => {
+const DiagnosisList = ({ codes }: Props) => {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[] | null>(null);
   
   useEffect(() => {
     const fetchDiagnoses = async () => {
-      if (patient && patient?.entries.length > 0) {
+      if (codes) {
         try {
           const diagnosisData = await diagnosesService.getAll();
-          const patientCodes = patient.entries
-            .map(entry => entry.diagnosisCodes)
-            .reduce((acc, val) => acc?.concat(val!), []);
-
           const patientDiagnosis = diagnosisData.filter(data => 
-            patientCodes?.includes(data.code)
+            codes.includes(data.code)
           );
 
           setDiagnoses(patientDiagnosis);
@@ -33,7 +29,7 @@ const DiagnosisList = ({ patient }: Props) => {
     };
 
     fetchDiagnoses();
-  }, [patient]);
+  }, [codes]);
 
   if (!diagnoses) {
     return null;
@@ -42,10 +38,10 @@ const DiagnosisList = ({ patient }: Props) => {
   return ( 
     diagnoses.length > 0 && (
       <>
-        <Typography sx={{ margin: '1rem 0 0.5rem' }}>
+        <Typography sx={{ margin: '0.75rem 0 0.25rem' }}>
           Diagnoses
         </Typography>
-        <List sx={{ padding: 0 }}>
+        <List sx={{ padding: 0, marginBottom: '0.25rem' }}>
           {diagnoses.map(diagnosis => (
             <ListItem key={diagnosis.code} sx={{ padding: 0, margin: 0 }}>
               <ListItemText>
