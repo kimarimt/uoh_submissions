@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import diagnosisRouter from './routes/diagnosis';
 import patientRouter from './routes/patient';

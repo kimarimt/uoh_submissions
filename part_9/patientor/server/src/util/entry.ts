@@ -26,7 +26,7 @@ const HealthCheckSchema = z.object({
 
 // OccupationHealthcare Schema
 const OccupationalHealthcareSchema = z.object({
-  type: z.literal('OccupationalHealth'),
+  type: z.literal('OccupationalHealthcare'),
   employerName: z.string(),
   sickLeave: z.object({ 
     startDate: z.string().date(),

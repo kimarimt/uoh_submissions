@@ -5,21 +5,11 @@ import { useMatch } from "react-router-dom";
 import { Card, CardContent, CardHeader, Divider, Typography } from "@mui/material";
 import EntriesList from "./EntriesList";
 import { Female, Male, Person } from "@mui/icons-material";
+import AddEntryForm from "./AddEntryForm";
 
 const PatientPage = () => {
-  const match = useMatch('/patients/:id');
   const [patient, setPatient] = useState<Patient | null>(null);
-
-  const genderIcon = () => {
-    switch (patient?.gender) {
-    case Gender.Female:
-      return <Female />;
-    case Gender.Male:
-      return <Male />;
-    case Gender.Other:
-      return <Person />;
-    }
-  };
+  const match = useMatch('/patients/:id');
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -37,6 +27,21 @@ const PatientPage = () => {
 
     fetchPatient();
   }, [match]);
+
+  const genderIcon = () => {
+    switch (patient?.gender) {
+    case Gender.Female:
+      return <Female />;
+    case Gender.Male:
+      return <Male />;
+    case Gender.Other:
+      return <Person />;
+    }
+  };
+
+  const updatePerson = (patientData: Patient) => {
+    setPatient(patientData);
+  };
   
   return (
     <Card style={{ marginTop: '1.5rem' }}>
@@ -46,6 +51,7 @@ const PatientPage = () => {
         <Typography variant='overline'>
           Occupation: {patient?.occupation}
         </Typography>
+        <AddEntryForm patient={patient} onSubmit={updatePerson} />
         <EntriesList patient={patient} />
       </CardContent>
     </Card>

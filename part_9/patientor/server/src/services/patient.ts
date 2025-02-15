@@ -38,7 +38,7 @@ const addPatient = (newPatient: NewPatient): Patient => {
   return patient;
 };
 
-const addEntry = (id: string, newEntry: NewEntry): Entry => {
+const addEntry = (id: string, newEntry: NewEntry): Patient => {
   const patient = patients.find(patient => patient.id === id);
 
   if (patient) {
@@ -48,7 +48,7 @@ const addEntry = (id: string, newEntry: NewEntry): Entry => {
     };
 
     patient.entries.push(addedEntry);
-    return addedEntry;
+    return patient;
   }
 
   throw new Error('patient not found');

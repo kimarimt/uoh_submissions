@@ -56,7 +56,7 @@ interface SickLeave {
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
-  type: 'OccupationalHealth';
+  type: 'OccupationalHealthcare';
   employerName: string;
   sickLeave?: SickLeave; 
 }

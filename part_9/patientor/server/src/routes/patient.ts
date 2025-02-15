@@ -16,7 +16,7 @@ patientRouter.get('/:id', (req: Request, res: Response) => {
     res.json(patient);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send({ 'error': error.message });
+      res.status(400).json({ 'error': error.message });
     }
   }
 });
@@ -30,11 +30,11 @@ patientRouter.post('/', newPatientHander, (req: Request<unknown, unknown, NewPat
 patientRouter.post('/:id/entries', (req: Request, res: Response) => {
   try {
     const newEntry: NewEntry = EntryUnion.parse(req.body);
-    const addedEntry = patientService.addEntry(req.params.id, newEntry);
-    res.status(201).json(addedEntry);
+    const updatedPatient = patientService.addEntry(req.params.id, newEntry);
+    res.status(201).json(updatedPatient);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(400).send({ 'error': error.message });
+      res.status(400).json({ 'error': error });
     }
   }
 });
